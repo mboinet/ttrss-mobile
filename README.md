@@ -21,6 +21,6 @@ How to use it?
 You should install the files in a directory on the same host as your Tiny Tiny RSS install. As the webapp uses AJAX calls to access the API, it should be hosted on the same domain name.
 
 *IMPORTANT*
-There are 2 vaiables at the beginning of main.js that must be configured:
+There are 2 variables at the beginning of main.js that must be configured:
  * window.apiPath
  * window.webappPath
