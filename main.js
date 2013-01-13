@@ -973,12 +973,13 @@ function defineRouter(){
     },
 
     login: function() {
-      $.mobile.changePage('#login');
+      this.transitionOptions = {transition: "slideup"},
+      this.goto('#login');
     },
 
     categories: function(){
       // show the page
-      $.mobile.changePage(window.categoriesPageView.render().$el);
+      this.goto(window.categoriesPageView.render().$el);
 
       // update model
       window.categoriesModel.fetch();
@@ -991,7 +992,7 @@ function defineRouter(){
         window.myRouter.navigate('', {trigger: true});
       } else {
         // go to the view
-        $.mobile.changePage(window.articlesPageView.render().$el);
+        this.goto(window.articlesPageView.render().$el);
 
         // update model
         window.articlesModel.fetch();
@@ -1005,7 +1006,7 @@ function defineRouter(){
         window.myRouter.navigate('', {trigger: true});
       } else {
         // go to the view
-        $.mobile.changePage(window.feedsPageView.render().$el);
+        this.goto(window.feedsPageView.render().$el);
 
         // update model
         window.feedsModel.fetch();
@@ -1033,12 +1034,25 @@ function defineRouter(){
         var view = window.articlePageView;
 
         view.model = art;
-        $.mobile.changePage(view.render().$el);
+        this.goto(view.render().$el);
 
         // tell the model to get all the article data
         art.fetch();
       }
-    }
+    },
+
+    transitionOptions: {},
+    setNextTransOptions : function(obj){
+      this.transitionOptions = obj;
+    },
+
+    goto: function(page){
+      $.mobile.changePage(page, this.transitionOptions);
+
+      // reset transitions options
+      this.transitionOptions = {};
+
+    } // goto
 
   });
 
@@ -1209,6 +1223,7 @@ function registerLoginPageActions(){
     )
     .done(function(data){
       if (data.status == 0){
+        window.myRouter.setNextTransOptions({reverse: true, transition: "slideup"});
         window.myRouter.navigate('cat', {trigger: true});
       } else {
         var msg = 'Unknown answer from the API:' + data.content;
@@ -1266,6 +1281,7 @@ $(document).bind('mobileinit', function(event){
   $.mobile.hashListeningEnabled = false;
   $.mobile.pushStateEnabled = false;
   $.mobile.changePage.defaults.changeHash = false;
+  $.mobile.defaultPageTransition = "slide";
 });
 
 
@@ -1299,6 +1315,13 @@ $(document).bind('pageinit', function(event){
         e.preventDefault();
         $.mobile.loading( 'show', { text: 'Logging out...', textVisible: true} );
         logout();
+      }
+    );
+
+    // initialize all logout buttons
+    $('a.backButton').on('click',
+      function(e){
+        window.myRouter.setNextTransOptions({reverse: true});
       }
     );
 
