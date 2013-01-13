@@ -687,8 +687,7 @@ function defineViews(){
             $lvDiv.append(li.el);
           }, this);
 
-
-          // do we have loaded all?
+/*          // do we have loaded all?
           var feedModel = window.feedsModel.get(id);
           if (feedModel != undefined){
             var feedUnreadCount = feedModel.get("unread");
@@ -704,9 +703,9 @@ function defineViews(){
                   alert("TODO");
                   e.preventDefault();
                 }
-              );
+              ); 
             }
-          }
+          } */
         }
       }
       $lvDiv.listview('refresh');
