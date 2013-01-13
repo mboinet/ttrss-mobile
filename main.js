@@ -307,9 +307,9 @@ function defineViews(){
             special.push(li.el);
           } else if (cat.get("unread") > 0){
             unread.push(li.el);
-          } /*else {
+          } else {
             other.push(li.el);
-          }*/
+          }
         }, this);
         
         if (special.length != 0){
@@ -328,16 +328,13 @@ function defineViews(){
           });
         }
 
-        /*
         if (other.length != 0){
           // we have other categories
           $lv.append(listSeparatorTpl({ text: 'Categories' }));
           _.each(other, function(o){
             $lv.append(o);
           });
-        } */
-
-        
+        }
         
       }
 
