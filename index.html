@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="lib/jquery.mobile-1.2.0.min.css" />
+  <script src="lib/jquery-1.8.3.min.js"></script>
+  <script src="lib/underscore-min.js"></script>
+  <script src="lib/backbone-min.js"></script>
+  <script src="main.js"></script>
+  <script src="lib/jquery.mobile-1.2.0.min.js"></script>
+</head>
+
+<body>
+
+  <div data-role="page" id="categories" data-title="Reader - Categories">
+    <div data-role="header" data-position="fixed">
+      <h1>Categories</h1>
+      <a href="#catPopupMenu" data-role="button" data-mini="true"
+        class="ui-btn-right" data-icon="arrow-d"
+        data-theme="b" data-rel="popup">Menu</a>
+    </div>
+    <div data-role="content">
+      <ul data-role="listview">
+      </ul>
+    </div>
+    
+    <div id="catPopupMenu" data-role="popup"
+      data-transition="pop" data-tolerance="34,5,0,0">
+      <ul data-role="listview" data-inset="true" data-theme="b">
+        <li data-icon="refresh"><a href="#" class="refreshButton">Refresh</a></li>     
+        <li data-icon="delete"><a href="#" class="logoutButton">Logout</a></li>       
+      </ul>
+    </div>
+  </div>
+ 
+
+  <div data-role="page" id="login" data-title="Reader - Login">
+    <div data-role="header">
+      <h1>Reader - Login</h1>
+    </div>
+    <div data-role="content">
+      <form action="#" method="POST" data-ajax="false">      
+        <div data-role="fieldcontain">
+          <label for="loginInput">Login:</label>
+          <input type="text" name="login" id="loginInput" value=""
+            autocapitalize="none" autocorrect="off" />
+        </div>
+        <div data-role="fieldcontain">
+          <label for="passwordInput">Password:</label>
+          <input type="password" name="password" id="passwordInput" value="" />
+        </div>
+        <button type="submit" data-theme="b">Login</button>
+      </form>
+    </div>
+  </div>
+
+
+  <div data-role="page" id="feeds" data-title="Reader - Feeds">
+    <div data-role="header" data-position="fixed">
+      <a href="#" data-role="button"
+        data-icon="back"
+        data-mini="true" class="ui-btn-left">Back</a>
+      <h1>Category</h1>
+      <a data-rel="popup" href="#feedsMenuPopup" data-role="button"
+        data-mini="true" class="ui-btn-right"
+        data-icon="arrow-d" data-theme="b">Menu</a>
+    </div>
+    <div data-role="content">
+      <ul data-role="listview">
+      </ul>
+    </div>    
+    <div id="feedsMenuPopup" data-role="popup" data-history="false"
+      data-transition="pop" data-tolerance="34,5,0,0">
+      <ul data-role="listview" data-inset="true" data-theme="b">
+        <li data-icon="refresh"><a href="#" class="refreshButton">Refresh</a></li>     
+        <li data-icon="delete"><a href="#" class="logoutButton">Logout</a></li>       
+      </ul>
+    </div>
+  </div><!-- Page #feeds -->
+
+  <div data-role="page" id="articles" data-title="Reader - Articles">
+    <div data-role="header" data-position="fixed">
+      <a href="#categories" data-role="button"
+        data-icon="back"
+        data-mini="true" class="ui-btn-left">Back</a>
+      <h1>Feed</h1>
+      <a href="#artMenuPopup" data-role="button" data-mini="true"
+        class="ui-btn-right" data-icon="arrow-d"
+        data-theme="b" data-rel="popup">Menu</a>
+    </div>
+    <div data-role="content">
+      <ul data-role="listview">
+      </ul>
+    </div>
+    
+    <div id="artMenuPopup" data-role="popup" data-history="false"
+      data-transition="pop" data-tolerance="34,5,0,0">
+      <ul data-role="listview" data-inset="true" data-theme="b">
+        <li data-icon="refresh"><a href="#" class="refreshButton">Refresh</a></li>     
+        <li data-icon="delete"><a href="#" class="logoutButton">Logout</a></li>       
+      </ul>
+    </div>
+ </div>
+ 
+  <div data-role="page" id="read" data-add-back-btn="true" data-title="Reader - Article">
+    <div data-role="header">
+      <a href="#categories" data-role="button"
+        data-icon="back"
+        data-mini="true" class="ui-btn-left">Back</a>
+      <h1>Article</h1>
+      <a href="#readPopupMenu" data-role="button" data-mini="true"
+        class="ui-btn-right" data-icon="arrow-d"
+        data-theme="b" data-rel="popup">Menu</a>
+    </div><!-- header -->
+    <div data-role="content">
+    </div>
+
+    <div id="readPopupMenu" data-role="popup" data-history="false"
+      data-transition="pop" data-tolerance="34,5,0,0">
+      <ul data-role="listview" data-inset="true" data-theme="b">
+        <li data-icon="check"><a href="#" class="toggleUnreadButton">Mark as unread</a></li>
+        <li data-icon="star"><a href="#" class="toggleStarredButton">Mark as starred</a></li>
+        <li data-icon="delete"><a href="#" class="logoutButton">Logout</a></li>       
+      </ul>
+    </div>
+  </div>
+
+</body>
+</html>
