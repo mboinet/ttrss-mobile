@@ -265,11 +265,6 @@ function defineViews(){
         count: this.model.get('unread') });
 
       this.el.innerHTML = html;
-
-      $lv = window.categoriesPageView.$el.find("div:jqmData(role='content') " +
-        "ul:jqmData(role='listview')");
-      $lv.listview("refresh");
-
       return this;
     },
     initialize: function() {
@@ -283,14 +278,11 @@ function defineViews(){
   CategoriesPageView = Backbone.View.extend({
     render: function(){
 
-      $lv = this.$el.find("div:jqmData(role='content') " +
-        "ul:jqmData(role='listview')");
-
       if (this.collection.size() == 0){
-        $lv.html(roListElementTpl({text: "Loading..."}));
+        this.$lv.html(roListElementTpl({text: "Loading..."}));
       } else {
         // clean up the list
-        $lv.empty();
+        this.$lv.empty();
 
         // special categories
         var special = [];
@@ -314,42 +306,46 @@ function defineViews(){
         
         if (special.length != 0){
           // we have special cat
-          $lv.append(listSeparatorTpl({ text: 'Special' }));
+          this.$lv.append(listSeparatorTpl({ text: 'Special' }));
           _.each(special, function(s){
-            $lv.append(s);
-          });
+            this.$lv.append(s);
+          }, this);
         }
 
         if (unread.length != 0){
           // we have other categories
-          $lv.append(listSeparatorTpl({ text: 'With unread articles' }));
+          this.$lv.append(listSeparatorTpl({ text: 'With unread articles' }));
           _.each(unread, function(u){
-            $lv.append(u);
-          });
+            this.$lv.append(u);
+          }, this);
         }
 
         if (other.length != 0){
           // we have other categories
-          $lv.append(listSeparatorTpl({ text: 'Categories' }));
+          this.$lv.append(listSeparatorTpl({ text: 'Categories' }));
           _.each(other, function(o){
-            $lv.append(o);
-          });
+            this.$lv.append(o);
+          }, this);
         }
         
       }
 
-      $lv.listview("refresh");
+      this.$lv.listview("refresh");
       return this;
     },
     initialize: function() {
       this.listenTo(this.collection, "reset", this.render);
     
       // refresh button for categories
-      this.$el.find('a.refreshButton').on('click', this, function(e){
+      this.$('a.refreshButton').on('click', this, function(e){
         e.data.collection.fetch();
         $('#catPopupMenu').popup('close');
         e.preventDefault();
       });
+
+      // store in the object a reference on the listview
+      this.$lv = this.$("div:jqmData(role='content') " +
+        "ul:jqmData(role='listview')");
     } // initialize
   });
 
@@ -404,7 +400,7 @@ function defineViews(){
       this.el.innerHTML = html;
 
       // refresh the listview
-      var $lv = window.feedsPageView.$el.find("div:jqmData(role='content') " +
+      var $lv = window.feedsPageView.$("div:jqmData(role='content') " +
         "ul:jqmData(role='listview')");
 
       $lv.listview("refresh");
@@ -446,18 +442,15 @@ function defineViews(){
     // callback to render the list of feeds of a category
     renderList: function(){
 
-      // listview div
-      var $lvDiv = this.$(
-        "div:jqmData(role='content') ul:jqmData(role='listview')");
+      // data for the listview
+      var lvData = "";
 
       // real category ID
       var id = window.feedsModel.getCurrentCatId();
 
       if (this.collection.catId != id){
         // it's loading right now, we don't have any cached data
-        $lvDiv.html(
-            roListElementTpl({text: "Loading..."})
-        );
+        lvData = roListElementTpl({text: "Loading..."});
       } else {
         // we have data from the good collection, updated or not
 
@@ -467,40 +460,47 @@ function defineViews(){
         if (feeds.length == 0){
           // no elements in the collection
           if (id == -2){
-            $lvDiv.html(roListElementTpl({text: "No labels"}));
+            lvData = roListElementTpl({text: "No labels"});
           } else {
-            $lvDiv.html(roListElementTpl({text: "No feeds"}));
+            lvData = roListElementTpl({text: "No feeds"});
           }
         } else {
           // we can add list elements
-          $lvDiv.empty();
 
           // feeds with unread
-          var seenUnread = false;
+          var unread = "";
+          
           feeds.forEach(function(feed){
             if (feed.get("unread") > 0){
-              seenUnread = true;
               var row = new FeedRowView({model:feed})
               var li = row.render();
-              $lvDiv.append(li.el);
+              unread += li.el.outerHTML;
             }
           }, this);
 
-          // other feeds
-          if (seenUnread){
-            $lvDiv.prepend(listSeparatorTpl({ text: 'With unread' }));
-            $lvDiv.append(listSeparatorTpl({ text: 'Other feeds' }));
+          // separator
+          if (unread != ""){
+            lvData += listSeparatorTpl({ text: 'With unread' }) + unread;
           } 
+          
+          var other = "";
+          // other feeds
           feeds.forEach(function(feed){          
             if (feed.get("unread") <= 0){
               var row = new FeedRowView({model: feed})
               var li = row.render();
-              $lvDiv.append(li.el);
+              other += li.el.outerHTML;
             }
           }, this);
+
+          if (other != ""){
+            lvData += listSeparatorTpl({ text: 'Other feeds' }) + other;
+          }
         }
       }
-      $lvDiv.listview('refresh');
+
+      this.$lv.html(lvData);
+      this.$lv.listview('refresh');
 
       return this;
     }, // renderList
@@ -530,7 +530,7 @@ function defineViews(){
       this.listenTo(this.collection, "reset", this.renderList);
      
       // register refresh button for feeds
-      this.$el.find("a.refreshButton").on(
+      this.$("a.refreshButton").on(
         // this is on from jQuery
         "click",
         this,
@@ -540,6 +540,10 @@ function defineViews(){
           e.preventDefault();
         }
       );
+
+      // listview div
+      this.$lv = this.$("div:jqmData(role='content') " +
+        "ul:jqmData(role='listview')");
     } // initialize
     
   }); //FeedsPageView
@@ -603,11 +607,6 @@ function defineViews(){
 
       this.el.innerHTML = html;
 
-      // refresh the view
-      window.articlePageView.$el.find(
-        "div:jqmData(role='content') ul:jqmData(role='listview')")
-        .listview("refresh");
-
       return this;
     },
     initialize: function() {
@@ -627,7 +626,7 @@ function defineViews(){
       var href = Backbone.history.fragment;
       href = "#" + href.substr(0, href.lastIndexOf("/"));
 
-      this.$el.find("div:jqmData(role='header') a:first").attr("href", href);
+      this.$("div:jqmData(role='header') a:first").attr("href", href);
     },
 
     // callback to render the title in the header
@@ -637,7 +636,7 @@ function defineViews(){
       var feedId = this.collection.getCurrentFeedId();
       
       // placeholder for the title of the category
-      var $h1Tag = this.$el.find("div:jqmData(role='header') h1");
+      var $h1Tag = this.$("div:jqmData(role='header') h1");
 
       // feed model
       var feedModel = window.feedsModel.get(feedId);
@@ -654,18 +653,16 @@ function defineViews(){
 
     // callback to render the listview of articles of a feed
     renderList: function(){
-      // listview div
-      var $lvDiv = this.$el.find(
-        "div:jqmData(role='content') ul:jqmData(role='listview')");
+
+      // data to add to the listview
+      var lData = "";
 
       // real feed ID
       var id = window.articlesModel.getCurrentFeedId();
 
       if (this.collection.feedId != id){
         // it's loading right now, we don't have any cached data
-        $lvDiv.html(
-            roListElementTpl({text: "Loading..."})
-        );
+        lData += roListElementTpl({text: "Loading..."});
 
         // waiting to be notified a second time
       } else {
@@ -673,39 +670,21 @@ function defineViews(){
 
         if (this.collection.length == 0){
           // no elements in the collection
-          $lvDiv.html(roListElementTpl({text: "No articles"}));
+          lData += roListElementTpl({text: "No articles"});
         } else {
           // we can add list elements
-          $lvDiv.empty();
 
           this.collection.forEach(function(article){          
             var row = new ArticleRowView({model: article})
             var li = row.render();
-            $lvDiv.append(li.el);
+            lData += li.el.outerHTML;
           }, this);
 
-/*          // do we have loaded all?
-          var feedModel = window.feedsModel.get(id);
-          if (feedModel != undefined){
-            var feedUnreadCount = feedModel.get("unread");
-            if (feedUnreadCount > this.collection.length){
-              $lvDiv.append(listLoadMoreTpl);
-
-              // register Load more click
-              this.$('a.loadMoreButton').on(
-                'click',
-                this,
-                function(e){
-                  e.data.collection.fetch({more: true});
-                  alert("TODO");
-                  e.preventDefault();
-                }
-              ); 
-            }
-          } */
+          // TODO check if there is more to load
         }
       }
-      $lvDiv.listview('refresh');
+      this.$lv.html(lData);
+      this.$lv.listview('refresh');
 
       return this;
     }, // renderList
@@ -733,7 +712,7 @@ function defineViews(){
       this.listenTo(this.collection, "reset", this.renderList);
 
       // register refresh button clicks
-      this.$el.find('a.refreshButton').on(
+      this.$('a.refreshButton').on(
         'click',
         this,
         function(e){
@@ -742,6 +721,10 @@ function defineViews(){
           e.preventDefault();
         }
       );
+
+      // listview div
+      this.$lv = this.$("div:jqmData(role='content') " +
+        "ul:jqmData(role='listview')");
     } // initialize
     
   }); //ArticlesPageView
@@ -761,7 +744,7 @@ function defineViews(){
 
       if (this.model.has("title")){
         // title is available now
-        var $h1Tag = this.$el.find("div:jqmData(role='header') h1");
+        var $h1Tag = this.$("div:jqmData(role='header') h1");
         $h1Tag.html(this.model.get("title"));
       } else {
         // title will be fetch and we'll be notified by the model
@@ -799,7 +782,7 @@ function defineViews(){
       var href = Backbone.history.fragment;
       href = "#" + href.substr(0, href.lastIndexOf("/"));
 
-      this.$el.find("div:jqmData(role='header') a:first").attr("href", href);
+      this.$("div:jqmData(role='header') a:first").attr("href", href);
     },
 
 
@@ -808,26 +791,28 @@ function defineViews(){
     renderContent: function(event){
 
       // the div for the data
-      var $contentDiv = this.$el.find("div:jqmData(role='content')");
+      var $contentDiv = this.$("div:jqmData(role='content')");
 
       if (this.model.has("content")){
         // this article is ready to be fully displayed
 
+        var article = "";
+
         // TODO: feed name & publish date
     
         // add a title link
-        $contentDiv.html(
-          articleTitleTpl({
-            href:  this.model.get("link"),
-            title: this.model.get("title")
-          })
-        );
+        article = articleTitleTpl({
+          href:  this.model.get("link"),
+          title: this.model.get("title")
+        });
 
         // add real content
-        $contentDiv.append(this.model.get("content"));
+        article += this.model.get("content");
 
         // apply content filters
-        cleanArticle($contentDiv, this.model.get("link"));
+        article = cleanArticle(article, this.model.get("link"));
+
+        $contentDiv.html(article);
         
         // mark as read and save it to the backend
         this.model.set({ unread: false });
@@ -881,6 +866,12 @@ function defineViews(){
         $('#readPopupMenu').popup('close');
         e.preventDefault();
       });
+
+      // TODO publush button
+
+      // store a reference on the listview
+      this.$lv = this.$("div:jqmData(role='content') " +
+        "ul:jqmData(role='listview')");
     } // initialize
 
   }); // ArticlePageView
@@ -1071,19 +1062,20 @@ if (typeof String.prototype.startsWith != 'function') {
 
 
 // clean up a dom object (article to display)
-function cleanArticle(dom, domain){
+function cleanArticle(content, domain){
+  var $dom = $(content);
 
   /* ARS Technica styles DIVs */
-  $(dom).find('div').removeAttr('style');
+  $dom.find('div').removeAttr('style');
   
   /* ARS technica bookmarks */
-  $(dom).find('div.feedflare').remove();
+  $dom.find('div.feedflare').remove();
   
   /* Feedburner images */
-  $(dom).find('img[href~="feedburner"]').remove();
+  $dom.find('img[href~="feedburner"]').remove();
   
   
-  var $toClean = $(dom).find('img,object,iframe');
+  var $toClean = $dom.find('img,object,iframe');
   $toClean.removeAttr('height');
     
   $toClean.each(
@@ -1101,7 +1093,7 @@ function cleanArticle(dom, domain){
             
       // if no width, set to 100%
       if ($(e).attr('width') == undefined){
-        $(e).width('100%');
+        $(e).attr("width", '100%');
       } else {
         // images to 100% width if larger than possible        
         
@@ -1115,7 +1107,7 @@ function cleanArticle(dom, domain){
   );
 
   // make link open in a new tab
-  $toClean = $(dom).find('a');
+  $toClean = $dom.find('a');
   $toClean.each(
     function(index, e){
       if ($(e).attr('target') != '_blank'){
@@ -1125,11 +1117,13 @@ function cleanArticle(dom, domain){
   );
 
   // objects size
-  $(dom).find('img').removeAttr('height');
-  $(dom).find('object').attr('width', '100%');
-  $(dom).find('object').removeAttr('height');
-  $(dom).find('iframe').attr('width', '100%');
-  $(dom).find('iframe').removeAttr('height'); 
+  $dom.find('img').removeAttr('height');
+  $dom.find('object').attr('width', '100%');
+  $dom.find('object').removeAttr('height');
+  $dom.find('iframe').attr('width', '100%');
+  $dom.find('iframe').removeAttr('height'); 
+
+  return $dom;
 }
 
 
