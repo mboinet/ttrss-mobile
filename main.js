@@ -1333,6 +1333,9 @@ $(document).bind('pageinit', function(event){
     
     // prepare all pages now
     $("div:jqmData(role='page')").page();
+
+    // first transition
+    window.myRouter.setNextTransOptions({transition: "fade"});
     
     // start Backbone router
     if (!Backbone.history.start({pushState: false, root: window.webappPath, silent: false})){
