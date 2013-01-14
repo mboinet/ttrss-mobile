@@ -590,19 +590,38 @@ function defineViews(){
       var html;
       var catId = window.feedsModel.getCurrentCatId();
       var feedModel = window.feedsModel.get(this.model.get("feed_id"));
-      if ((catId >= 0) || (feedModel == undefined)){
-        // normal cat, we know the feed name
-        html = articleLiElementTpl({
-          href:  link,
-          date:  dateStr,
-          title: this.model.get('title') });
+
+      if (this.model.get("unread")){
+        if ((catId >= 0) || (feedModel == undefined)){
+          // normal cat, we know the feed name
+          html = articleLiElementTpl({
+            href:  link,
+            date:  dateStr,
+            title: this.model.get('title') });
+        } else {
+          // special cat, we show the feed name
+          html = articleFeedLiElementTpl({
+            href:  link,
+            date:  dateStr,
+            title: this.model.get('title'),
+            feed: feedModel.get("title") });
+        }
       } else {
-        // special cat, we show the feed name
-        html = articleFeedLiElementTpl({
-          href:  link,
-          date:  dateStr,
-          title: this.model.get('title'),
-          feed: feedModel.get("title") });
+        //read article
+        if ((catId >= 0) || (feedModel == undefined)){
+          // normal cat, we know the feed name
+          html = articleReadLiElementTpl({
+            href:  link,
+            date:  dateStr,
+            title: this.model.get('title') });
+        } else {
+          // special cat, we show the feed name
+          html = articleReadFeedLiElementTpl({
+            href:  link,
+            date:  dateStr,
+            title: this.model.get('title'),
+            feed: feedModel.get("title") });
+        }
       }
 
       this.el.innerHTML = html;
@@ -892,6 +911,8 @@ var listLoadMoreTpl;
 var roListElementTpl;
 var articleLiElementTpl;
 var articleFeedLiElementTpl;
+var articleReadLiElementTpl;
+var articleReadFeedLiElementTpl;
 var articleLoadingTpl;
 var articleTitleTpl;
 
@@ -930,6 +951,17 @@ function compileTemplates(){
     '<h3><%= title %></h3>' +
     '<p class="ul-li-desc"><strong><%= feed %></strong></p>' +
     '<p class="ui-li-desc"><%= date %></p></a>');
+
+  // the content of a LI element for a read article
+  articleReadLiElementTpl = _.template('<a href="<%= href %>">' +
+    '<h3><%= title %></h3>' +
+    '<p class="ui-li-desc"><%= date %>&nbsp;&ndash;&nbsp;<em>already read</em></p></a>');
+
+  // the content of a LI element for a read article with the feed Name
+  articleReadFeedLiElementTpl = _.template('<a href="<%= href %>">' +
+    '<h3><%= title %></h3>' +
+    '<p class="ul-li-desc"><strong><%= feed %></strong></p>' +
+    '<p class="ui-li-desc"><%= date %>&nbsp;&ndash;&nbsp;<em>already read</em></p></a>');
 
   // the content of the content DIV when an article is loading
   articleLoadingTpl = _.template('<h3><%= msg %></h3>');
