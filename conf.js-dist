@@ -1,0 +1,12 @@
+
+/************ global config variables **********/
+/* Copy config.js-dist to config.js
+   and set it up for your environment. */
+
+/* relative URL from the root to access your Tiny Tiny RSS
+   installation */
+window.apiPath="/tt-rss/";
+
+/* relative URL from the root to access this webapp */
+window.webappPath="/ttrss-mobile/";
+

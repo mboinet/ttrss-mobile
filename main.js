@@ -3,10 +3,10 @@
 
 /* relative URL from the root to acces your Tiny Tiny RSS
    installation */
-window.apiPath="/tt-rss/";
+// window.apiPath="/tt/";
 
 /* relative URL from the root to access this webapp */
-window.webappPath="/ttrss-mobile/";
+// window.webappPath="/tt/ttrss-mobile/";
 
 
 
