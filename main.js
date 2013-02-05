@@ -1139,7 +1139,7 @@ function cleanArticle(content, domain){
       } else {
         // images to 100% width if larger than possible        
         
-        var imgW = $(e).width();
+        var imgW = e.getAttribute("width");
         var divW = $(window).width();
         if (imgW > divW){
           $(e).width('100%');
