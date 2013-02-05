@@ -457,7 +457,6 @@ function defineViews(){
 
           // feeds with unread
           var unread = "";
-          
           feeds.forEach(function(feed){
             if (feed.get("unread") > 0){
               var row = new FeedRowView({model:feed})
@@ -466,13 +465,8 @@ function defineViews(){
             }
           }, this);
 
-          // separator
-          if (unread != ""){
-            lvData += listSeparatorTpl({ text: 'With unread' }) + unread;
-          } 
-          
-          var other = "";
           // other feeds
+          var other = "";
           feeds.forEach(function(feed){          
             if (feed.get("unread") <= 0){
               var row = new FeedRowView({model: feed})
@@ -481,9 +475,18 @@ function defineViews(){
             }
           }, this);
 
-          if (other != ""){
-            lvData += listSeparatorTpl({ text: 'Other feeds' }) + other;
+          // separator
+          if ((other != "") && (unread != "")){
+            lvData += listSeparatorTpl({ text: 'With unread' });
+          } 
+
+          lvData += unread;
+
+          // separator
+          if ((unread != "") && (other != "")){
+              lvData += listSeparatorTpl({ text: 'Other feeds' });
           }
+          lvData += other;
         }
       }
 
