@@ -814,7 +814,7 @@ function defineViews(){
         });
 
         // add real content
-        article += this.model.get("content");
+        article += "<div>" + this.model.get("content") + "</div>";
 
         // apply content filters
         article = cleanArticle(article, this.model.get("link"));
