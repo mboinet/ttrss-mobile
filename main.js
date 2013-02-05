@@ -1148,13 +1148,11 @@ function cleanArticle(content, domain){
     }
   );
 
-  // make link open in a new tab
+  // make all links open in a new tab
   $toClean = $dom.find('a');
   $toClean.each(
     function(index, e){
-      if ($(e).attr('target') != '_blank'){
-        $(e).attr('target', '_blank');
-      }
+      $(e).attr('target', '_blank');
     }
   );
 
