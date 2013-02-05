@@ -778,6 +778,10 @@ function defineViews(){
       this.renderStarredToggleButton();
       this.listenTo(this.model, "change:marked", this.renderStarredToggleButton);
       
+      // unread toggle
+      this.renderPublishToggleButton();
+      this.listenTo(this.model, "change:published", this.renderPublishToggleButton);
+
       // TODO add next/previous article
 
       return this;
@@ -854,6 +858,17 @@ function defineViews(){
 
     },
 
+    renderPublishToggleButton: function(){
+      var but = this.$("a.togglePublishButton");
+
+      if (this.model.get("published")){
+        but.html("Unpublish");
+      } else {
+        but.html("Publish");
+      }
+
+    },
+
     initialize: function(){
 
       // mark as unread button on an article
@@ -865,7 +880,7 @@ function defineViews(){
         e.preventDefault();
       });
 
-      // mark as stareed button on an article
+      // mark as starred button on an article
       this.$('a.toggleStarredButton').on('click', this, function(e){
         var artModel = e.data.model;
         artModel.set("marked", ! artModel.get("marked"));
@@ -874,7 +889,14 @@ function defineViews(){
         e.preventDefault();
       });
 
-      // TODO publush button
+      // publish button on an article
+      this.$('a.togglePublishButton').on('click', this, function(e){
+        var artModel = e.data.model;
+        artModel.set("published", ! artModel.get("published"));
+        artModel.save();
+        $('#readPopupMenu').popup('close');
+        e.preventDefault();
+      });
 
       // store a reference on the listview
       this.$lv = this.$("div:jqmData(role='content') " +
