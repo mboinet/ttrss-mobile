@@ -785,8 +785,6 @@ function defineViews(){
       this.renderPublishToggleButton();
       this.listenTo(this.model, "change:published", this.renderPublishToggleButton);
 
-      // TODO add next/previous article
-
       return this;
     },
 
@@ -827,6 +825,9 @@ function defineViews(){
         article = cleanArticle(article, this.model.get("link"));
 
         $contentDiv.html(article);
+
+        // add links to prev/next articles at the bottom
+        $contentDiv.append(this.getPrevNextHtml()).trigger('create');
         
         // mark as read and save it to the backend
         this.model.set({ unread: false });
@@ -869,6 +870,62 @@ function defineViews(){
       } else {
         but.html("Publish");
       }
+
+    },
+
+    getPrevNextHtml: function(){
+      // html to add
+      var html = "";
+
+      // is the article in the collection
+      var index = window.articlesModel.indexOf(this.model);
+      if (index == -1){
+        return html;
+      }
+
+      // base link
+      var ln = "#" + Backbone.history.fragment;
+      ln = ln.substring(0, ln.lastIndexOf("art") + 3);
+
+      if (index > 0){
+        // do we have a previous article?
+        var prevArt = window.articlesModel.at(index - 1);
+
+        html += gridLeftButtonTpl({
+          href:   ln + prevArt.id,
+          cl:  "",
+          title:  prevArt.get("title")
+        });
+        
+
+      } else {
+        // disabled button
+        html += gridLeftButtonTpl({
+          href:   "#",
+          cl:  "ui-disabled",
+          title:  ""
+        });
+      }
+
+      if (index + 1 < window.articlesModel.length){
+        // do we have a next article?
+        var nextArt = window.articlesModel.at(index + 1);
+
+        html += gridRightButtonTpl({
+          href:   ln + nextArt.id,
+          cl:  "",
+          title:  nextArt.get("title")
+        });
+      } else {
+        // disabled button
+        html += gridRightButtonTpl({
+          href:   "#",
+          cl:  "ui-disabled",
+          title:  ""
+        });
+      }
+
+      return html;
 
     },
 
@@ -981,6 +1038,17 @@ function compileTemplates(){
 
   // the content of the content DIV when an article is loading
   articleTitleTpl = _.template('<h2><a href="<%= href %>" target="_blank"><%= title %></a></h2>');
+
+  // button for the prev/next
+  gridLeftButtonTpl = _.template('<div class="ui-grid-a">' +
+    '<div class="ui-block-a">' +
+    '<a data-role="button" data-icon="arrow-l" href="<%= href %>" class="<%= cl %>">previous</a>' +
+    '<em><%= title %></em></div>');
+  gridRightButtonTpl = _.template('<div class="ui-block-b">' +
+    '<a data-role="button" data-icon="arrow-r" data-iconpos="right" href="<%= href %>" class="<%= cl %>">next</a>' +
+    '<em><%= title %></em></div>' +
+    '</div>');
+  
 }
 
 
