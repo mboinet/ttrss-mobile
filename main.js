@@ -824,10 +824,16 @@ function defineViews(){
         // apply content filters
         article = cleanArticle(article, this.model.get("link"));
 
-        $contentDiv.html(article);
+        $contentDiv.html(article).trigger('create');
 
-        // add links to prev/next articles at the bottom
-        $contentDiv.append(this.getPrevNextHtml()).trigger('create');
+        // add previous/next links at the bottom
+        if (window.articlesModel.length == 0){
+          // collection empty, update it
+          window.articlesModel.once("reset", this.renderPrevNext, this);
+          window.articlesModel.fetch();
+        } else {
+          this.renderPrevNext();
+        }
         
         // mark as read and save it to the backend
         this.model.set({ unread: false });
@@ -873,14 +879,20 @@ function defineViews(){
 
     },
 
-    getPrevNextHtml: function(){
+    renderPrevNext: function(){
       // html to add
       var html = "";
 
       // is the article in the collection
-      var index = window.articlesModel.indexOf(this.model);
+      var m = window.articlesModel.get(this.model.id);
+      if (m == null){
+        return;
+      }
+
+      var index = window.articlesModel.indexOf(m);
       if (index == -1){
-        return html;
+        // nothing to do, article not in the collection
+        return ;
       }
 
       // base link
@@ -925,7 +937,9 @@ function defineViews(){
         });
       }
 
-      return html;
+      // we now have the HTML ready, add it to the content
+      this.$("div:jqmData(role='content')")
+        .append(html).trigger('create');
 
     },
 
