@@ -162,45 +162,37 @@ function defineModels(){
       var id = f.replace(re, "$1");
 
       return parseInt(id);
-    },
-
+    },       
 
     sync: function(method, collection, options) {
 
       if (method == "read"){
-        if (options.more == true){
-          //load more to the list
-          var msg = {
-           op:             "getHeadlines",
-            feed_id:        collection.getCurrentFeedId(),
-            show_excerpt:   false,
-            view_mode:      "adaptive",
-            show_content:   false,
-            skip:           this.length,
-            limit:          10
-          };
-          
-          ttRssApiCall(
-            msg, function(res){
-              collection.add(res);
-            }, true);
-        } else {
-          // we need to fetch the list for this feed
-          var msg = {
-           op:             "getHeadlines",
-            feed_id:        collection.getCurrentFeedId(),
-            show_excerpt:   false,
-            view_mode:      "adaptive",
-            show_content:   false,
-            limit:          10
-          };
+      
+        var feedId = collection.getCurrentFeedId();
 
-          ttRssApiCall(
-            msg, function(res){
-              collection.feedId = collection.getCurrentFeedId();
-              collection.reset(res, {merge: true});
-            }, true);
+        // we need to fetch the articles list for this feed
+        var msg = {
+          op:             "getHeadlines",
+          show_excerpt:   false,
+          view_mode:      "adaptive",
+          show_content:   false,
+          limit:          10
+        };
+        
+        if (feedId == -9){
+          // special case (all articles from a whole category)
+          msg.feed_id = window.feedsModel.getCurrentCatId();
+          msg.is_cat = true;
+        } else {
+          // normal case
+          msg.feed_id = feedId;
         }
+
+        ttRssApiCall(
+          msg, function(res){
+            collection.feedId = collection.getCurrentFeedId();
+            collection.reset(res, {merge: true});
+          }, true);
       } else {
         console.log("ArticlesModel.sync called for an unsupported method: " + method);
       }
@@ -443,7 +435,7 @@ function defineViews(){
         // we have data from the good collection, updated or not
 
         // an array of the models for this category
-        var feeds = this.collection.where({cat_id: id});
+        var feeds = this.collection.where({cat_id: id})
 
         if (feeds.length == 0){
           // no elements in the collection
@@ -454,17 +446,20 @@ function defineViews(){
           }
         } else {
           // we can add list elements
-
+          var unreadCount = 0;
+          
           // feeds with unread
           var unread = "";
           feeds.forEach(function(feed){
-            if (feed.get("unread") > 0){
+            var count = feed.get("unread");
+            if (count > 0){
               var row = new FeedRowView({model:feed})
               var li = row.render();
               unread += li.el.outerHTML;
+              unreadCount += count;
             }
           }, this);
-
+          
           // other feeds
           var other = "";
           feeds.forEach(function(feed){          
@@ -475,18 +470,30 @@ function defineViews(){
             }
           }, this);
 
-          // separator
-          if ((other != "") && (unread != "")){
-            lvData += listSeparatorTpl({ text: 'With unread' });
-          } 
-
-          lvData += unread;
-
-          // separator
-          if ((unread != "") && (other != "")){
-              lvData += listSeparatorTpl({ text: 'Other feeds' });
+          // the all feeds link (-9 is its special ID)
+          var all = "";
+          if ((id <= -10) || (id > 0)){
+            // only when on real categories or labels
+            all += "<li>" + listElementTpl({
+              href:  "#" + Backbone.history.fragment + "/feed-9",
+              title: "All",
+              count: unreadCount
+            }) + "</li>";
           }
-          lvData += other;
+          
+
+          // unread separator
+          if ((unread != "") && ((other != "")||(all != ""))){
+            unread = listSeparatorTpl({ text: 'With unread' }) + unread;
+          }
+
+          // other separator
+          if ((other != "") && ((unread != "") || (all != ""))){
+              other = listSeparatorTpl({ text: 'Already read' }) + other;
+          }      
+
+          // we add everything to the view
+          lvData = all + unread + other;
         }
       }
 
@@ -580,10 +587,11 @@ function defineViews(){
 
       var html;
       var catId = window.feedsModel.getCurrentCatId();
+      var feedId = window.articlesModel.getCurrentFeedId();
       var feedModel = window.feedsModel.get(this.model.get("feed_id"));
 
       if (this.model.get("unread")){
-        if ((catId >= 0) || (feedModel == undefined)){
+        if (((catId >= 0) && (feedId != -9)) || (feedModel == undefined)){
           // normal cat, we know the feed name
           html = articleLiElementTpl({
             href:  link,
@@ -599,7 +607,7 @@ function defineViews(){
         }
       } else {
         //read article
-        if ((catId >= 0) || (feedModel == undefined)){
+        if (((catId >= 0) && (feedId != -9)) || (feedModel == undefined)){
           // normal cat, we know the feed name
           html = articleReadLiElementTpl({
             href:  link,
