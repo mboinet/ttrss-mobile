@@ -832,7 +832,13 @@ function defineViews(){
         // apply content filters
         article = cleanArticle(article, this.model.get("link"));
 
-        $contentDiv.html(article).trigger('create');
+        // display article
+        $contentDiv.html(article);
+
+        // resize big elements when they are loaded
+        $contentDiv.find('img,object,iframe,audio,video').load(makeResponsive);
+
+        $contentDiv.trigger('create');
 
         // add previous/next links at the bottom
         if (window.articlesModel.length == 0){
@@ -1195,6 +1201,16 @@ if (typeof String.prototype.startsWith != 'function') {
 }
 
 
+/* put width to 100% when displayed element too big */
+function makeResponsive(){
+  var contentWidth = $(this).parents("div").innerWidth();
+  var elWidth = $(this).outerWidth();
+  if (elWidth > contentWidth){
+    // if larger than possible        
+    $(this).attr("width", "100%");
+  }
+}
+
 
 // clean up a dom object (article to display)
 function cleanArticle(content, domain){
@@ -1225,19 +1241,6 @@ function cleanArticle(content, domain){
         );
         $(e).attr('src', newsrc);
       }      
-            
-      // if no width, set to 100%
-      if ($(e).attr('width') == undefined){
-        $(e).attr("width", '100%');
-      } else {
-        // images to 100% width if larger than possible        
-        
-        var imgW = e.getAttribute("width");
-        var divW = $(window).width();
-        if (imgW > divW){
-          $(e).width('100%');
-        }
-      }            
     }
   );
 
