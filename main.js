@@ -1356,11 +1356,11 @@ function registerLoginPageActions(){
         window.myRouter.setNextTransOptions({reverse: true, transition: "slideup"});
         window.myRouter.navigate('cat', {trigger: true});
       } else {
-        var msg = 'Unknown answer from the API:' + data.content;
-        if (data.content == 'API_DISABLED'){
-          msg = 'API is disabled for this user.';
-        } else if (data.content = 'LOGIN_ERROR'){
-          msg = 'Specified username and password are incorrect.';
+        var msg = "Unknown answer from the API:" + data.content;
+        if (data.content.error == "API_DISABLED"){
+          msg = 'API is disabled for this user';
+        } else if (data.content.error == "LOGIN_ERROR"){
+          msg = "Specified username and password are incorrect";
         }
         alert(msg);
         $.mobile.loading('hide');
