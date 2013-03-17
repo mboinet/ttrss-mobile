@@ -196,6 +196,40 @@ function defineModels(){
       } else {
         console.log("ArticlesModel.sync called for an unsupported method: " + method);
       }
+    }, // sync()
+
+    toggleUnread: function(){
+
+      var articles = "";
+
+      // do we need to mark all as read or unread?
+      if (this.where({unread: true}).length > 0){
+        this.where({unread: true}).forEach(
+          function(m){
+            m.set({unread: false})
+            articles += m.id + ",";
+          });
+      } else {
+        this.where({unread: false}).forEach(
+          function(m){
+            m.set({unread: true})
+            articles += m.id + ",";
+          });
+      }
+
+      //remove last comma
+      articles = articles.substr(0, articles.length - 1);
+
+      // we send an update event to notify the view
+      this.trigger("update");
+
+      // API call to mark as read
+      ttRssApiCall(
+        { op: 'updateArticle',
+          article_ids: articles,
+          mode: 2,
+          field: 2 },
+         function(m){ jQuery.noop(); } , true);
     }
 
   });
@@ -626,11 +660,12 @@ function defineViews(){
       this.el.innerHTML = html;
 
       return this;
-    },
+    }, // render
+
     initialize: function() {
       this.el = document.createElement('li');
-      this.listenTo(this.model, "change", this.render);
     },
+
     tagName: 'li'
   });
  
@@ -707,19 +742,30 @@ function defineViews(){
       return this;
     }, // renderList
 
+    renderMarkAllButton: function(){
+      var but = this.$("a.toggleUnreadButton");
+
+      if (this.collection.length == 0){
+        // disable button, no articles in the list
+        but.addClass("ui-disabled");
+        but.html("Mark all as ?");
+      } else {
+        but.removeClass("ui-disabled");
+        if (this.collection.where({unread: true}).length > 0){
+          but.html("Mark all as read");
+        } else {
+          but.html("Mark all as unread");
+        }
+      }
+    },
+
     // callback to render the title in the header
     render: function(){
 
       this.renderBackButton();
       this.renderTitle();
       this.renderList();
-
-      if (window.feedsModel.length == 0){
-        // ask to be notified when a feed is added
-        window.feedsModel.once("reset", this.renderTitle, this);
-        window.feedsModel.once("reset", this.renderList, this);
-        window.feedsModel.fetch();
-      }
+      this.renderMarkAllButton();
 
       return this;
     },
@@ -728,6 +774,7 @@ function defineViews(){
 
       // render the list when elements are added or removed
       this.listenTo(this.collection, "reset", this.renderList);
+      this.listenTo(this.collection, "update", this.renderList);
 
       // register refresh button clicks
       this.$('a.refreshButton').on(
@@ -739,6 +786,27 @@ function defineViews(){
           e.preventDefault();
         }
       );
+
+      // register mark all as read button
+      this.$('a.toggleUnreadButton').on(
+        'click',
+        this,
+        function(e){
+
+          e.data.collection.toggleUnread();
+          $("#artMenuPopup").popup('close');
+          e.preventDefault();
+        }
+      );
+
+      // render the title when the collection is reset
+      this.listenTo(this.collection, "reset", this.renderTitle);
+
+      // render the mark all button every time the collection
+      // change
+      this.listenTo(this.collection, "reset", this.renderMarkAllButton);
+      this.listenTo(this.collection, "change", this.renderMarkAllButton);
+      this.listenTo(this.collection, "update", this.renderMarkAllButton);
 
       // listview div
       this.$lv = this.$("div:jqmData(role='content') " +
