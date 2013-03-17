@@ -843,10 +843,15 @@ function defineViews(){
       // back button
       this.renderBackButton();
 
-      // title update
+      // Title in the header update
       this.renderTitle();
+
+      // header with link, update info & feed
+      this.listenTo(this.model, "change:title", this.renderContentHeader);
+      this.renderContentHeader();
         
-      // content part
+      // content part, article
+      this.listenTo(this.model, "change:content", this.renderContentHeader);
       this.renderContent();
 
       // unread toggle
@@ -874,28 +879,50 @@ function defineViews(){
     },
 
 
+    renderContentHeader: function(){
+      var $headerDiv = this.$("div:jqmData(role='content') > div.header");
+
+      if ($headerDiv.length == 0){
+        // no div yet
+        this.$("div:jqmData(role='content')").prepend("<div class=\"header\"></div>");
+        $headerDiv = this.$("div:jqmData(role='content') > div.header");
+      }
+
+      var link = this.model.get("link");
+      if (! link){
+        link = "";
+      }
+      var title = this.model.get("title");
+      if (! title){
+        title = "Loading...";
+      }
+      
+      $headerDiv.html(
+        articleTitleTpl({
+          href: link,
+          title: title
+        })
+      );
+
+      //TODO add time and feed info
+
+    }, //renderContentHeader
 
     // this callback can be called as a method or an event callback
     renderContent: function(event){
 
-      // the div for the data
-      var $contentDiv = this.$("div:jqmData(role='content')");
+      // the div for the content
+      var $contentDiv = this.$("div:jqmData(role='content') > div.main");
+      if ($contentDiv.length == 0){
+        // no div yet
+        this.$("div:jqmData(role='content')").append("<div class=\"main\"></div>");
+        $contentDiv = this.$("div:jqmData(role='content') > div.main");
+      }
 
       if (this.model.has("content")){
         // this article is ready to be fully displayed
 
-        var article = "";
-
-        // TODO: feed name & publish date
-    
-        // add a title link
-        article = articleTitleTpl({
-          href:  this.model.get("link"),
-          title: this.model.get("title")
-        });
-
-        // add real content
-        article += "<div>" + this.model.get("content") + "</div>";
+        var article = this.model.get("content");
 
         // apply content filters
         article = cleanArticle(article, this.model.get("link"));
@@ -1020,7 +1047,7 @@ function defineViews(){
       }
 
       // we now have the HTML ready, add it to the content
-      this.$("div:jqmData(role='content')")
+      this.$("div:jqmData(role='content') > div.main")
         .append(html).trigger('create');
 
     },
@@ -1285,7 +1312,8 @@ function makeResponsive(){
 
 // clean up a dom object (article to display)
 function cleanArticle(content, domain){
-  var $dom = $(content);
+  var data = "<article>" + content + "</article>";
+  var $dom = $(data);
 
   /* ARS Technica styles DIVs */
   $dom.find('div').removeAttr('style');
