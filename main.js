@@ -175,7 +175,7 @@ function defineModels(){
           op:             "getHeadlines",
           show_excerpt:   false,
           view_mode:      "adaptive",
-          show_content:   false,
+          show_content:   true,
           limit:          10
         };
         
@@ -1237,7 +1237,10 @@ function defineRouter(){
         this.goto(view.render().$el);
 
         // tell the model to get all the article data
-        art.fetch();
+        // if we don't have content yet
+        if (! art.has("content")){
+          art.fetch();
+        }
       }
     },
 
