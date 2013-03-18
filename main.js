@@ -598,26 +598,7 @@ function defineViews(){
       var link = "#" + Backbone.history.fragment +
         "/art" + this.model.id;
 
-      var date = new Date(this.model.get("updated") * 1000);
-      var now = new Date(Date.now());
-
-      // date in YYYY/MM/DD
-      var dateStr = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-
-      // time in HH:MM
-      var min = date.getMinutes();
-      var  timeStr = date.getHours() + ':' + ( (min > 9) ? min : '0' + min );
-
-      // nom in YYYY/MM/DD
-      var nowStr = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
-
-      if (dateStr == nowStr){
-        // only time if it's today
-        dateStr = timeStr;
-      } else {
-        dateStr = dateStr + " " + timeStr;
-      }
-
+      var dateStr = updateTimeToString(this.model.get("updated"));
 
       var html;
       var catId = window.feedsModel.getCurrentCatId();
@@ -849,6 +830,13 @@ function defineViews(){
       // header with link, update info & feed
       this.listenTo(this.model, "change:title", this.renderContentHeader);
       this.renderContentHeader();
+
+      var feedModel = window.feedsModel.get(this.model.get("feed_id"));
+      if (feedModel == undefined){
+        // we don't have the feed name
+        window.feedsModel.once("reset", this.renderContentHeader, this);
+        window.feedsModel.fetch();
+      }
         
       // content part, article
       this.listenTo(this.model, "change:content", this.renderContentHeader);
@@ -892,15 +880,37 @@ function defineViews(){
       if (! link){
         link = "";
       }
+
       var title = this.model.get("title");
       if (! title){
-        title = "Loading...";
+        title = "Title loading...";
+      }
+
+      var feedModel = window.feedsModel.get(this.model.get("feed_id"));
+      var feed = "loading";
+      if (feedModel != undefined){
+        feed = feedModel.get("title");
+      }
+
+      var time = this.model.get("updated");
+      if (! time){
+        time = "loading...";
+      } else {
+        time = updateTimeToString(time);
+      }
+
+      var updTxt = "Published: ";
+      if (this.model.get("is_updated")){
+        updTxt = "Updated: "
       }
       
       $headerDiv.html(
         articleTitleTpl({
           href: link,
-          title: title
+          title: title,
+          feed: feed,
+          time: time,
+          update: updTxt
         })
       );
 
@@ -1159,8 +1169,10 @@ function compileTemplates(){
   // the content of the content DIV when an article is loading
   articleLoadingTpl = _.template('<h3><%= msg %></h3>');
 
-  // the content of the content DIV when an article is loading
-  articleTitleTpl = _.template('<h2><a href="<%= href %>" target="_blank"><%= title %></a></h2>');
+  // the header content for an article page
+  articleTitleTpl = _.template('<h3><a href="<%= href %>" target="_blank"><%= title %></a></h3>' +
+    '<p class="feed">Feed: <%= feed %></p>' +
+    '<p class="updateTime"><%= update %><time><%= time %></time></p>');
 
   // button for the prev/next
   gridLeftButtonTpl = _.template('<div class="ui-grid-a">' +
@@ -1498,6 +1510,48 @@ function isLoggedIn(){
   return loggedIn;
 
 } // isLoggedIn
+
+
+// it returns a valid formatted string
+// of the update time representation of Tiny Tiny RSS
+function updateTimeToString(time){
+  var date = new Date(time * 1000); 
+  var now = new Date(Date.now());
+
+  // date in YYYY-MM-DD
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  month = (month < 10 ? "0" : "") + month;
+  var day = date.getDate();
+  day = (day < 10 ? "0" : "") + day;
+  var dateStr = year + "-" + month + "-" + day;
+
+  // time in HH:MM
+  var hour = date.getHours();
+  hour = (hour < 10 ? "0" : "") + hour;
+  var min = date.getMinutes();
+  min = (min < 10 ? "0" : "") + min;
+  var  timeStr = hour + ":" + min;
+
+  // now in YYYY-MM-DD
+  year = now.getFullYear();
+  month = now.getMonth() + 1;
+  month = (month < 10 ? "0" : "") + month;
+  day = now.getDate();
+  day = (day < 10 ? "0" : "") + day;
+  var nowStr = year + "-" + month + "-" + day;
+
+  // if today, puts the time of day
+  if (dateStr == nowStr){
+    // only time if it's today
+    dateStr = timeStr;
+  } else {
+    dateStr = dateStr + " " + timeStr;
+  }
+
+  return dateStr;
+}
+
 
 
 /************** init bindings *************/
