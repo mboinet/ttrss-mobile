@@ -940,8 +940,9 @@ function defineViews(){
         // display article
         $contentDiv.html(article);
 
-        // resize big elements when they are loaded
-        $contentDiv.find('img,object,iframe,audio,video').load(makeResponsive);
+        // remove any hardcoded sizes
+        $contentDiv.find('img,object,iframe,audio,video').removeAttr("width");
+        $contentDiv.find('img,object,iframe,audio,video').removeAttr("height");
 
         $contentDiv.trigger('create');
 
@@ -1313,18 +1314,6 @@ if (typeof String.prototype.startsWith != 'function') {
   };
 }
 
-
-/* put width to 100% when displayed element too big */
-function makeResponsive(){
-  var contentWidth = $(this).parents("div").innerWidth();
-  var elWidth = $(this).outerWidth();
-  if (elWidth > contentWidth){
-    // if larger than possible        
-    $(this).attr("width", "100%");
-  }
-}
-
-
 // clean up a dom object (article to display)
 function cleanArticle(content, domain){
   var data = "<article>" + content + "</article>";
@@ -1365,13 +1354,6 @@ function cleanArticle(content, domain){
       $(e).attr('target', '_blank');
     }
   );
-
-  // objects size
-  $dom.find('img').removeAttr('height');
-  $dom.find('object').attr('width', '100%');
-  $dom.find('object').removeAttr('height');
-  $dom.find('iframe').attr('width', '100%');
-  $dom.find('iframe').removeAttr('height'); 
 
   return $dom;
 }
