@@ -1197,6 +1197,7 @@ function defineRouter(){
 
     routes: {
       "login":                  "login",       // #login
+      "login?from=*qr":         "login",       // #login?from=#cat4/feed23
       "":                       "categories",  // #
       "cat:catId":              "feeds",       // #cat4
       "cat:catId/feed:feedId":  "articles",    // #cat4/feed23
@@ -1392,9 +1393,12 @@ function ttRssApiCall(req, success, async){
   error object: {"error":"NOT_LOGGED_IN"} */
 function apiErrorHandler(msg){
   if (msg.error == "NOT_LOGGED_IN"){
-    /* TODO, store the previous location to redirect uses
-      when they log in */
-    window.myRouter.navigate('login', {trigger: true});
+    var where = "login";
+    if (location.hash != ""){
+      // we store where we-re coming from in a query string
+      where += "?from=" + location.hash;
+    } 
+    window.myRouter.navigate(where, {trigger: true});
   } else {
     alert('apiErrorHandler\nUnknown API error message' + msg.error);
   }
@@ -1450,7 +1454,17 @@ function registerLoginPageActions(){
     .done(function(data){
       if (data.status == 0){
         window.myRouter.setNextTransOptions({reverse: true, transition: "slideup"});
-        window.myRouter.navigate('cat', {trigger: true});
+
+        // try to get from query string if it exists
+        var fragment = location.hash;
+        var re = /\?from=#(.+)/;
+        var nextRoute = "cat";
+        var ex = re.exec(fragment)
+        if (ex != null){
+          nextRoute = ex[1];
+        }
+
+        window.myRouter.navigate(nextRoute, {trigger: true});
       } else {
         var msg = "Unknown answer from the API:" + data.content;
         if (data.content.error == "API_DISABLED"){
