@@ -1256,7 +1256,7 @@ function defineRouter(){
       var id = parseInt(artId);
 
       if (isNaN(id)){
-        // id invalid
+        // id invalid, go to categories page
         window.myRouter.navigate('', {trigger: true});
       } else {
 
@@ -1274,6 +1274,9 @@ function defineRouter(){
 
         view.model = art;
         this.goto(view.render().$el);
+
+        // scroll to top
+        window.scroll(0,0);
 
         // tell the model to get all the article data
         // if we don't have content yet
