@@ -57,6 +57,10 @@ TODO
 * CDN usage for the libs
 * Chrome/default browser choice on iOS
 * number of articles in a list configuration
+* update to Backbone.js 1.0
+* versionning
+* CSS out of the HTML
+* a proper changelog
 * ...
 
 Don't hesitate to give a hand :-)
