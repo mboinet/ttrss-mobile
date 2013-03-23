@@ -61,6 +61,7 @@ TODO
 * versionning
 * CSS out of the HTML
 * a proper changelog
+* small next/prev links in the header of an article
 * ...
 
 Don't hesitate to give a hand :-)
