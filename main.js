@@ -921,8 +921,6 @@ function defineViews(){
         })
       );
 
-      //TODO add time and feed info
-
     }, //renderContentHeader
 
     // this callback can be called as a method or an event callback
