@@ -62,6 +62,7 @@ TODO
 * CSS out of the HTML
 * a proper changelog
 * small next/prev links in the header of an article
+* subscribe/unsubscribe feed
 * ...
 
 Don't hesitate to give a hand :-)
