@@ -54,10 +54,9 @@ TODO
 * better error handler
 * configuration page
 * sub-categories support
-* CDN usage for the libs
+* CDN usage for jQueryMobile
 * Chrome/default browser choice on iOS
 * number of articles in a list configuration
-* update to Backbone.js 1.0
 * versionning
 * a proper changelog
 * small next/prev links in the header of an article
