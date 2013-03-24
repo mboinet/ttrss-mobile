@@ -667,7 +667,7 @@ function defineViews(){
     renderTitle: function(){
 
       // catId on the fragment
-      var feedId = this.collection.getCurrentFeedId();
+      var feedId = window.articlesModel.getCurrentFeedId();
       
       // placeholder for the title of the category
       var $h1Tag = this.$("div:jqmData(role='header') h1");
@@ -748,6 +748,16 @@ function defineViews(){
       this.renderList();
       this.renderMarkAllButton();
 
+      /* if the feed model isn't available, we need to
+      fetch it and update the title when it will be
+      ready */
+      var feedModel = window.feedsModel.get(
+        window.articlesModel.getCurrentFeedId());
+      if (feedModel == undefined){
+        window.feedsModel.once("reset", this.renderTitle, this);
+        window.feedsModel.fetch();
+      }
+
       return this;
     },
 
@@ -779,9 +789,6 @@ function defineViews(){
           e.preventDefault();
         }
       );
-
-      // render the title when the collection is reset
-      this.listenTo(this.collection, "reset", this.renderTitle);
 
       // render the mark all button every time the collection
       // change
