@@ -1,0 +1,27 @@
+
+div#read div[data-role=content]>div.header>p{
+  margin: 0;
+  font-style: italic;
+}
+
+div#read div[data-role=content]>div.header>h3{
+  margin-top: 0;
+  margin-bottom: 0.2em;
+}
+
+div#read div[data-role=content]>div.header{
+  margin-bottom: 2em;
+}
+
+div#read div[data-role=content]>div.main img,
+div#read div[data-role=content]>div.main object,
+div#read div[data-role=content]>div.main iframe,
+div#read div[data-role=content]>div.main audio,
+div#read div[data-role=content]>div.main video {
+  max-width: 100%;
+}
+
+div#read div[data-role=content]>div.main pre {
+  white-space: pre-wrap;
+}
+
