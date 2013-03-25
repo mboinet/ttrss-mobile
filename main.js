@@ -17,7 +17,9 @@ function defineModels(){
         // only action for a category: read
         var request = {
           op:             "getCategories",
-          enable_nested:  "true"
+          enable_nested:  "false"
+          // we want nested ones but they will not be
+          // nested yet
         };
 
         ttRssApiCall(request, function(res){
@@ -61,8 +63,9 @@ function defineModels(){
       // only action for a category: read
       if (method == "read"){
         var request = {
-          op:           "getFeeds",
-          cat_id:       -4/* collection.getCurrentCatId() */
+          op:             "getFeeds",
+          cat_id:         -4, // all feeds, including virtual
+          include_nested: false // does not work with -4
         };
 
         ttRssApiCall(
