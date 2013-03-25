@@ -53,7 +53,6 @@ TODO
 * remember last location in webapp mode
 * better error handler
 * configuration page
-* sub-categories support
 * CDN usage for jQueryMobile
 * Chrome/default browser choice on iOS
 * number of articles in a list configuration
