@@ -44,6 +44,7 @@ Current features
 * publish/unpublish article support
 * star/unstar article support
 * mark as read/unread article support
+* iPhone webapp support (startup image & icon)
 
 TODO
 ----
