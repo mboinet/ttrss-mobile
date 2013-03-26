@@ -49,18 +49,13 @@ Current features
 TODO
 ----
 
-* proper SINGLE_USER_MODE support (it logins with any user/password in the form at this time)
-* remember login/password
 * remember last location in webapp mode
 * better error handler
 * configuration page
-* CDN usage for jQueryMobile
-* Chrome/default browser choice on iOS
 * number of articles in a list configuration
 * versionning
 * a proper changelog
 * small next/prev links in the header of an article
-* subscribe/unsubscribe feed
-* ...
+* *the rest as issues*
 
 Don't hesitate to give a hand :-)
