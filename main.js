@@ -922,7 +922,7 @@ function defineViews(){
           time: time,
           update: updTxt
         })
-      );
+      ).trigger("create");
 
     }, //renderContentHeader
 
