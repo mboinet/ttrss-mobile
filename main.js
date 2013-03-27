@@ -1397,15 +1397,22 @@ function ttRssApiCall(req, success, async){
   require valid login session or will return this
   error object: {"error":"NOT_LOGGED_IN"} */
 function apiErrorHandler(msg){
-  if (msg.error == "NOT_LOGGED_IN"){
-    var where = "login";
-    if (location.hash != ""){
-      // we store where we-re coming from in a query string
-      where += "?from=" + location.hash;
-    } 
-    window.myRouter.navigate(where, {trigger: true});
-  } else {
+  if (msg.error =! "NOT_LOGGED_IN"){
+    // real error 
     alert('apiErrorHandler\nUnknown API error message' + msg.error);
+
+  } else {
+    // need to login
+    if (! location.hash.startsWith("#login")){
+      var dest = "login"; // new destination
+
+      if (location.hash != ""){
+        // we store where we're coming from in a query string
+        dest += "?from=" + location.hash;
+      }
+
+      window.myRouter.navigate(dest, {trigger: true});
+    } // else user is already where he needs to be
   }
 }
 
