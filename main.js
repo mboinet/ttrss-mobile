@@ -1414,7 +1414,7 @@ function apiErrorHandler(msg){
 
 function ajaxErrorHandler(event, jqXHR, ajaxSettings, thrownError){
   // TODO
-  alert('ajaxErrorHandler' + thrownError);
+  console.error('ajaxErrorHandler error: ' + thrownError);
 }
 
 /* to make a logout call */
