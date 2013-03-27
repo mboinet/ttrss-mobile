@@ -1214,11 +1214,8 @@ function defineRouter(){
     },
 
     defaultRoute: function(path){
-      if (! isLoggedIn()){
-        window.myRouter.navigate('login', {trigger: true});
-      } else {
-        window.myRouter.navigate('', {trigger: true});
-      }
+      // go to homepage if route unknown
+      window.myRouter.navigate('', {trigger: true});
     },
 
     login: function() {
@@ -1486,37 +1483,6 @@ function registerLoginPageActions(){
     });
   }); // login button
 }
-
-
-function isLoggedIn(){
-  var msg = {
-    'op': 'isLoggedIn'
-  };
-
-  var loggedIn;
-
-  jQuery.ajax(
-    {
-      url: window.apiPath + 'api/',
-      contentType: "application/json",
-      dataType: 'json',
-      cache: 'false',
-      data: JSON.stringify(msg),
-      type: 'post',
-      async: false
-    }
-  )
-  .done(function(data){
-    if (data.status == 0){
-      loggedIn = data.content.status;
-    } else {
-      apiErrorHandler (data.content);
-    }
-  });
-
-  return loggedIn;
-
-} // isLoggedIn
 
 
 // it returns a valid formatted string
