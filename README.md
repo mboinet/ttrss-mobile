@@ -45,6 +45,7 @@ Current features
 * star/unstar article support
 * mark as read/unread article support
 * iPhone webapp support (startup image & icon)
+* SINGLE_USER_MODE support
 
 TODO
 ----
