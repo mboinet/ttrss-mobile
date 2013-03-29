@@ -179,7 +179,7 @@ function defineModels(){
           show_excerpt:   false,
           view_mode:      "adaptive",
           show_content:   true,
-          limit:          10
+          limit:          window.limit
         };
         
         if (feedId == -9){
