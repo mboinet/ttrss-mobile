@@ -159,6 +159,11 @@
       <h1>Configuration</h1>
     </div>
     <div data-role="content">
+      <form action="#" method="POST" data-ajax="false">      
+        <label for="articles-number">Number of articles to load:</label>
+        <input name="artNumber" pattern="[0-9]*"
+          id="articles-number" value="10" type="number">
+      </form>
       <div class="version">
         <p>Version : 1.0.0</p>
       </div>
