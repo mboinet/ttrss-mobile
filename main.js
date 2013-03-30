@@ -301,7 +301,18 @@ function defineModels(){
 
     defaults: {
       articlesNumber: 10
-    }
+    },
+
+    validate: function(attrs, options){
+      // test articlesNumber
+      if (attrs.articlesNumber <= 0){
+        return "Must be greater than 0";
+      }
+
+      if (attrs.articlesNumber > 60){
+        return "Cannot be greater than 60";
+      }
+    } //validate
   }); // SettingsModel
 
   window.settingsModel = new SettingsModel();
@@ -1155,6 +1166,56 @@ function defineViews(){
   window.articlePageView = new ArticlePageView({
     el: $("#read")
   });
+
+
+
+  /******* for the settings page ****/
+
+  var SettingsPageView = Backbone.View.extend({
+
+    render: function(){
+      var artN = this.model.get("articlesNumber");
+      this.$("#articles-number").attr("value",artN);
+      return this;
+    },
+
+    settingsChanged: function (event){
+      /* function called when any form element
+      * change on the settings page */
+      event.data.model.set(
+        {articlesNumber: $("#articles-number").val()},
+        {validate: true}
+      );
+
+     // persist data
+      event.data.model.save();
+    }, //settingsChanged
+
+    settingsError: function(event){
+      alert(this.model.validationError);
+    },
+
+    initialize: function(){
+      // bind the view to the model
+      this.model = window.settingsModel;
+    
+      // load settings from localStorage & update values
+      this.model.fetch();
+
+      // bind settings change handler
+      this.$("form").change(this, this.settingsChanged);
+
+      // prevent form from submitting
+      this.$("form").submit(this, function(e){e.preventDefault();});
+
+      // bind validation errors
+      this.model.on("invalid", this.settingsError, this);
+    
+    } //init
+  });
+  window.settingsPageView = new SettingsPageView({
+    el: $("#settings")
+  });
   
 } // defineViews
 
@@ -1346,7 +1407,7 @@ function defineRouter(){
 
     settings: function(){
       this.setNextTransOptions({reverse: false, transition: "flip"});
-      this.goto($("#settings"));
+      this.goto(window.settingsPageView.render().$el);
       this.setNextTransOptions({reverse: true, transition: "flip"});
     },
 
@@ -1605,8 +1666,6 @@ function updateTimeToString(time){
   return dateStr;
 }
 
-
-
 /************** init bindings *************/
 
 $(document).bind('mobileinit', function(event){
@@ -1645,9 +1704,6 @@ $(document).bind('pageinit', function(event){
     defineViews();
     defineRouter();
 
-    // load settings from localStorage
-    window.settingsModel.fetch();
-
     // initialize all logout buttons
     $('a.logoutButton').on('click',
       function(e){
@@ -1675,7 +1731,7 @@ $(document).bind('pageinit', function(event){
                                   positionTo: $(e.currentTarget) });
       }
     );
-    
+
     // prepare all pages now
     $("div:jqmData(role='page')").page();
 
