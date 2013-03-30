@@ -242,7 +242,7 @@ function defineModels(){
 
 
 
-  /*********** config ********/
+  /*********** TTRSS config ********/
 
   // a model to store configuration (from getConfig in the API)
   var ConfigModel = Backbone.Model.extend({
@@ -260,6 +260,51 @@ function defineModels(){
   // global config model
   window.configModel = new ConfigModel();
 
+  
+  /*********** webapp settings ********/
+  var SettingsModel = Backbone.Model.extend({
+    sync: function(method, model){
+      if (!window.localStorage){
+        // persistence won't work
+        console.warn("ConfigModel needs localStorage support, sorry" +
+                     " settings won't be saved.");
+
+      } else {
+        if (method == "read"){
+          /* read from localStorage every attributes */
+          for (var i = 0; i < window.localStorage.length; i++){
+            var key = window.localStorage.key(i);
+            var val = window.localStorage.getItem(key);
+            if (val != null){
+              model.set(key, val);
+            }
+          }
+        } else if (method == "update"){
+          /* write to localStorage every changed attributes */
+          _.each(model.changed, function(value, key, list){
+            window.localStorage.setItem(key, value);
+          }, this);
+
+        } else if (method == "create"){
+          // set an id to tell Backbone that the server has a copy
+          model.set({id: "mySettings"});
+          /* write to localStorage every attributes */
+          _.each(model.attributes, function(value, key, list){
+            window.localStorage.setItem(key, value);
+          }, this);
+        } else {
+          console.warn("ConfigModel.sync called with unexpected method: " + method);
+        }
+      }
+
+    }, //sync
+
+    defaults: {
+      articlesNumber: 10
+    }
+  }); // SettingsModel
+
+  window.settingsModel = new SettingsModel();
 
 } //defineModels
 
@@ -1599,6 +1644,9 @@ $(document).bind('pageinit', function(event){
     defineModels();
     defineViews();
     defineRouter();
+
+    // load config
+    window.settingsModel.fetch();
 
     // initialize all logout buttons
     $('a.logoutButton').on('click',
