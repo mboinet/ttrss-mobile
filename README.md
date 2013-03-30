@@ -46,17 +46,7 @@ Current features
 * mark as read/unread article support
 * iPhone webapp support (startup image & icon)
 * SINGLE_USER_MODE support
+* settings page
 
-TODO
-----
-
-* remember last location in webapp mode
-* better error handler
-* configuration page
-* number of articles in a list configuration
-* versionning
-* a proper changelog
-* small next/prev links in the header of an article
-* *the rest as issues*
-
-Don't hesitate to give a hand :-)
+Other features to come are tracked as issues.
+Don't hesitate to give a hand or request things :-)
