@@ -1645,7 +1645,7 @@ $(document).bind('pageinit', function(event){
     defineViews();
     defineRouter();
 
-    // load config
+    // load settings from localStorage
     window.settingsModel.fetch();
 
     // initialize all logout buttons
