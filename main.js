@@ -1210,6 +1210,7 @@ function defineRouter(){
       "cat:catId":              "feeds",       // #cat4
       "cat:catId/feed:feedId":  "articles",    // #cat4/feed23
       "cat:catId/feed:feedId/art:artId":  "read",        // #cat4/feed23/art1234
+      "settings":               "settings",    // #settings
       "*path":                  "defaultRoute" // #*
     },
 
@@ -1296,6 +1297,12 @@ function defineRouter(){
     transitionOptions: {},
     setNextTransOptions : function(obj){
       this.transitionOptions = obj;
+    },
+
+    settings: function(){
+      this.setNextTransOptions({reverse: false, transition: "flip"});
+      this.goto($("#settings"));
+      this.setNextTransOptions({reverse: true, transition: "flip"});
     },
 
     goto: function(page){
