@@ -264,37 +264,30 @@ function defineModels(){
   /*********** webapp settings ********/
   var SettingsModel = Backbone.Model.extend({
     sync: function(method, model){
-      if (!window.localStorage){
-        // persistence won't work
-        console.warn("ConfigModel needs localStorage support, sorry" +
-                     " settings won't be saved.");
-
-      } else {
-        if (method == "read"){
-          /* read from localStorage every attributes */
-          for (var i = 0; i < window.localStorage.length; i++){
-            var key = window.localStorage.key(i);
-            var val = window.localStorage.getItem(key);
-            if (val != null){
-              model.set(key, val);
-            }
+      if (method == "read"){
+        /* read from localStorage every attributes */
+        for (var i = 0; i < window.localStorage.length; i++){
+          var key = window.localStorage.key(i);
+          var val = window.localStorage.getItem(key);
+          if (val != null){
+            model.set(key, val);
           }
-        } else if (method == "update"){
-          /* write to localStorage every changed attributes */
-          _.each(model.changed, function(value, key, list){
-            window.localStorage.setItem(key, value);
-          }, this);
-
-        } else if (method == "create"){
-          // set an id to tell Backbone that the server has a copy
-          model.set({id: "mySettings"});
-          /* write to localStorage every attributes */
-          _.each(model.attributes, function(value, key, list){
-            window.localStorage.setItem(key, value);
-          }, this);
-        } else {
-          console.warn("ConfigModel.sync called with unexpected method: " + method);
         }
+      } else if (method == "update"){
+        /* write to localStorage every changed attributes */
+        _.each(model.changed, function(value, key, list){
+          window.localStorage.setItem(key, value);
+        }, this);
+
+      } else if (method == "create"){
+        // set an id to tell Backbone that the server has a copy
+        model.set({id: "mySettings"});
+        /* write to localStorage every attributes */
+        _.each(model.attributes, function(value, key, list){
+          window.localStorage.setItem(key, value);
+        }, this);
+      } else {
+        console.warn("ConfigModel.sync called with unexpected method: " + method);
       }
 
     }, //sync
@@ -1666,6 +1659,38 @@ function updateTimeToString(time){
   return dateStr;
 }
 
+function localeStorageSupport(){
+
+  //taken from https://developer.mozilla.org/en-US/docs/DOM/Storage#localStorage
+
+  if (!window.localStorage) {
+    window.localStorage = {
+      getItem: function (sKey) {
+        if (!sKey || !this.hasOwnProperty(sKey)) { return null; }
+        return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+      },
+      key: function (nKeyId) {
+        return unescape(document.cookie.replace(/\s*\=(?:.(?!;))*$/, "").split(/\s*\=(?:[^;](?!;))*[^;]?;\s*/)[nKeyId]);
+      },
+      setItem: function (sKey, sValue) {
+        if(!sKey) { return; }
+        document.cookie = escape(sKey) + "=" + escape(sValue) + "; expires=Tue, 19 Jan 2038 03:14:07 GMT; path=/";
+        this.length = document.cookie.match(/\=/g).length;
+      },
+      length: 0,
+      removeItem: function (sKey) {
+        if (!sKey || !this.hasOwnProperty(sKey)) { return; }
+        document.cookie = escape(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+        this.length--;
+      },
+      hasOwnProperty: function (sKey) {
+        return (new RegExp("(?:^|;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+      }
+    };
+    window.localStorage.length = (document.cookie.match(/\=/g) || window.localStorage).length;
+  }
+}
+
 /************** init bindings *************/
 
 $(document).bind('mobileinit', function(event){
@@ -1689,6 +1714,9 @@ $(document).bind('pageinit', function(event){
   if (! g_init){
 
     g_init = true;
+
+    // alternative to localStorage using cookies
+    localeStorageSupport();
     
     // events for login page
     registerLoginPageActions();
