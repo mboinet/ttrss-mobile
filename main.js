@@ -300,7 +300,7 @@ function defineModels(){
     }, //sync
 
     defaults: {
-      articlesNumber: 10
+      articlesNumber: ((window.limit > 0) && (window.limit <= 60)) ? window.limit : 10
     },
 
     validate: function(attrs, options){
