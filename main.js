@@ -1478,13 +1478,20 @@ function cleanArticle(content, domain){
   - success => the success callback (one param the content)
   - async => async call? */
 function ttRssApiCall(req, success, async){
+  var data = req;
+  var sid = window.settingsModel.get("sid");
+
+  if (sid != undefined){
+    data.sid = sid;
+  }
+
   jQuery.ajax(
     {
       url: window.apiPath + 'api/',
       contentType: "application/json",
       dataType: 'json',
       cache: 'false',
-      data: JSON.stringify(req),
+      data: JSON.stringify(data),
       type: 'post',
       async: async
     }
@@ -1534,7 +1541,9 @@ function apiErrorHandler(msg){
         
         } else {
           // SINGLE_USER_MODE
-          // cookie has been set
+          window.settingsModel.set("sid", data.content.session_id);
+          window.settingsModel.save();
+
           window.location.reload(true);
         }
       });
@@ -1592,6 +1601,10 @@ function registerLoginPageActions(){
     )
     .done(function(data){
       if (data.status == 0){
+        // we store the sessions id
+        window.settingsModel.set("sid", data.content.session_id);
+        window.settingsModel.save();
+
         window.myRouter.setNextTransOptions({reverse: true, transition: "slideup"});
 
         // try to get from query string if it exists
