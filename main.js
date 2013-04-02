@@ -1072,25 +1072,20 @@ function defineViews(){
         return ;
       }
 
-      // base fragment
-      var frg = Backbone.history.fragment;
-      frg = frg.substring(0, frg.lastIndexOf("art") + 3);
+      // base link
+      var ln = "#" + Backbone.history.fragment;
+      ln = ln.substring(0, ln.lastIndexOf("art") + 3);
 
-      // do we have a previous article?
       if (index > 0){
+        // do we have a previous article?
         var prevArt = window.articlesModel.at(index - 1);
-        var prevFrg = frg + prevArt.id;
 
         html += gridLeftButtonTpl({
-          href:   "#" + prevFrg,
+          href:   ln + prevArt.id,
           cl:  "",
           title:  prevArt.get("title")
         });
         
-        // register swipe
-        this.$el.on("swiperight", {fragment: prevFrg}, function(event){
-          window.myRouter.navigate(event.data.fragment, {trigger: true});
-        });
 
       } else {
         // disabled button
@@ -1101,20 +1096,14 @@ function defineViews(){
         });
       }
 
-      // do we have a next article?
       if (index + 1 < window.articlesModel.length){
+        // do we have a next article?
         var nextArt = window.articlesModel.at(index + 1);
-        var nextFrg = frg + nextArt.id;
 
         html += gridRightButtonTpl({
-          href: "#" + nextFrg,
+          href:   ln + nextArt.id,
           cl:  "",
           title:  nextArt.get("title")
-        });
-
-        // register swipe
-        this.$el.on("swipeleft", {fragment: nextFrg}, function(event){
-          window.myRouter.navigate(event.data.fragment, {trigger: true});
         });
       } else {
         // disabled button
