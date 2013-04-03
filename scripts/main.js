@@ -1,4 +1,32 @@
 
+
+/* require config */
+
+requirejs.config({
+  shim: {
+    'backbone': {
+      deps: ['underscore', 'jquery'],
+      exports: 'Backbone'
+    },
+    'underscore': {
+      exports: '_'
+    },
+    'jquerymobile': {
+      deps: ['jquery']
+    }
+  }, //shim
+
+  paths: {
+    'backbone':     'lib/backbone-min',
+    'underscore':   'lib/underscore-min',
+    'jquerymobile': 'lib/jquery.mobile-1.3.0.min',
+    'jquery':       'lib/jquery-1.9.1'
+  } //path
+});
+
+
+define(['backbone','jquery','underscore','conf'], function(){
+
 /***************** Models *************/
 function defineModels(){
 
@@ -1786,4 +1814,11 @@ $(document).bind('pageinit', function(event){
 
   }
 });
+
+// now we can load jquerymobile
+require(['jquerymobile'],function(){
+  alert("started!");
+});
+
+}); //require
 
