@@ -1672,7 +1672,7 @@ function updateTimeToString(time){
   return dateStr;
 }
 
-function localeStorageSupport(){
+function localStorageSupport(){
 
   //taken from https://developer.mozilla.org/en-US/docs/DOM/Storage#localStorage
 
@@ -1729,7 +1729,7 @@ $(document).bind('pageinit', function(event){
     g_init = true;
 
     // alternative to localStorage using cookies
-    localeStorageSupport();
+    localStorageSupport();
     
     // events for login page
     registerLoginPageActions();
