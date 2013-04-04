@@ -22,6 +22,10 @@ How to use it?
 You should install the files in a directory on the same host as your *Tiny Tiny RSS* install.
 As the webapp uses AJAX calls to access the API, it should be hosted on the **same domain name**.
 
+You should not put this webapp in a subdir of your *Tiny Tiny RSS* install. On update, it could
+be wiped. For more info, see [this post](http://tt-rss.org/forum/viewtopic.php?f=10&t=1216&p=8411#p8359)
+from *HunterZ* on the forum.
+
 Copy `conf.js-dist` to `conf.js` and set these variables:
  * `window.apiPath`
  * `window.webappPath`
@@ -46,7 +50,7 @@ Current features
 * mark as read/unread article support
 * iPhone webapp support (startup image & icon)
 * SINGLE_USER_MODE support
-* settings page
+* settings page: only number of articles to load as of now
 
 Other features to come are tracked as issues.
 Don't hesitate to give a hand or request things :-)
