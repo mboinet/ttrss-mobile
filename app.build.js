@@ -3,6 +3,7 @@
   baseUrl: "scripts",
   dir: "build",
   mainConfigFile: 'src/scripts/main.js',
+  removeCombined: true,
   modules: [
     {
       name: "main",
