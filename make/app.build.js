@@ -1,8 +1,8 @@
 ({
-  appDir: "src",
+  appDir: "../src",
   baseUrl: "scripts",
-  dir: "build",
-  mainConfigFile: 'src/scripts/main.js',
+  dir: "../build",
+  mainConfigFile: '../src/scripts/main.js',
   removeCombined: true,
   modules: [
     {
