@@ -7,7 +7,8 @@
   modules: [
     {
       name: "main",
-      include: ["jquerymobile"]
+      include: ["jquerymobile"],
+      exclude: ["conf"]
     }
   ]
 })
