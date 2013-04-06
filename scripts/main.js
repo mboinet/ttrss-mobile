@@ -18,14 +18,16 @@ requirejs.config({
 
   paths: {
     'backbone':     'lib/backbone-min',
-    'underscore':   'lib/underscore-min',
     'jquerymobile': 'lib/jquery.mobile-1.3.0.min',
+    'underscore':   'lib/underscore-min',
     'jquery':       'lib/jquery-1.9.1'
   } //path
 });
 
+requirejs(['jquery','backbone','templates','conf'],
+  function($, Backbone, tpl){
 
-define(['backbone','jquery','underscore','conf'], function(){
+
 
 /***************** Models *************/
 function defineModels(){
@@ -356,7 +358,7 @@ function defineViews(){
   // a view for each row of a categories list
   CategoryRowView = Backbone.View.extend({
     render: function(){
-      var html = listElementTpl({
+      var html = tpl.listElementTpl({
         href:  '#cat' + this.model.id,
         title: this.model.get('title'),
         count: this.model.get('unread') });
@@ -376,7 +378,7 @@ function defineViews(){
     render: function(){
 
       if (this.collection.size() == 0){
-        this.$lv.html(roListElementTpl({text: "Loading..."}));
+        this.$lv.html(tpl.roListElementTpl({text: "Loading..."}));
       } else {
         // clean up the list
         this.$lv.empty();
@@ -403,7 +405,7 @@ function defineViews(){
         
         if (special.length != 0){
           // we have special cat
-          this.$lv.append(listSeparatorTpl({ text: 'Special' }));
+          this.$lv.append(tpl.listSeparatorTpl({ text: 'Special' }));
           _.each(special, function(s){
             this.$lv.append(s);
           }, this);
@@ -411,7 +413,7 @@ function defineViews(){
 
         if (unread.length != 0){
           // we have other categories
-          this.$lv.append(listSeparatorTpl({ text: 'With unread articles' }));
+          this.$lv.append(tpl.listSeparatorTpl({ text: 'With unread articles' }));
           _.each(unread, function(u){
             this.$lv.append(u);
           }, this);
@@ -419,7 +421,7 @@ function defineViews(){
 
         if (other.length != 0){
           // we have other categories
-          this.$lv.append(listSeparatorTpl({ text: 'Categories' }));
+          this.$lv.append(tpl.listSeparatorTpl({ text: 'Categories' }));
           _.each(other, function(o){
             this.$lv.append(o);
           }, this);
@@ -1239,88 +1241,6 @@ function defineViews(){
 
 
 
-/************** underscore templates ************/
-var listSeparatorTpl;
-var listElementTpl;
-var listElementWithIconTpl;
-var listLoadMoreTpl;
-var roListElementTpl;
-var articleLiElementTpl;
-var articleFeedLiElementTpl;
-var articleReadLiElementTpl;
-var articleReadFeedLiElementTpl;
-var articleLoadingTpl;
-var articleTitleTpl;
-
-function compileTemplates(){
-  // a jQuery listview separator element
-  listSeparatorTpl = _.template('<li data-role="list-divider"><%= text %></li>');
-
-  // a jQuery listview link element (to put inside a li)
-  listElementTpl   = _.template('<a href="<%= href %>">' +
-                                '<%= title %>' +
-                                '<span class="ui-li-count"><%= count %></span>' +
-                                '</a>');
-
-  // a jQuery listview link element with icon (to put inside a li)
-  listElementWithIconTpl   = _.template('<a href="<%= href %>">' +
-                                '<img src="<%= src %>" class="ui-li-icon"></img>' +
-                                '<%= title %>' +
-                                '<span class="ui-li-count"><%= count %></span>' +
-                                '</a>');
-                                
-  // a jQuery listview read-only element
-  roListElementTpl = _.template('<li class="ui-li-static"><%= text %></li>');
-
-  //
-  listLoadMoreTpl = _.template('<li data-theme="b"><a class="loadMoreButton" href="#">' +
-                               '<h2>Load more articles...</h2></a></li>');
-
-
-  // the content of a LI element for an article
-  articleLiElementTpl = _.template('<a href="<%= href %>">' +
-    '<h3><%= title %></h3>' +
-    '<p class="ui-li-desc"><%= date %></p></a>');
-
-  // the content of a LI element for an article with the feed Name
-  articleFeedLiElementTpl = _.template('<a href="<%= href %>">' +
-    '<h3><%= title %></h3>' +
-    '<p class="ul-li-desc"><strong><%= feed %></strong></p>' +
-    '<p class="ui-li-desc"><%= date %></p></a>');
-
-  // the content of a LI element for a read article
-  articleReadLiElementTpl = _.template('<a href="<%= href %>">' +
-    '<h3><%= title %></h3>' +
-    '<p class="ui-li-desc"><%= date %>&nbsp;&ndash;&nbsp;<em>already read</em></p></a>');
-
-  // the content of a LI element for a read article with the feed Name
-  articleReadFeedLiElementTpl = _.template('<a href="<%= href %>">' +
-    '<h3><%= title %></h3>' +
-    '<p class="ul-li-desc"><strong><%= feed %></strong></p>' +
-    '<p class="ui-li-desc"><%= date %>&nbsp;&ndash;&nbsp;<em>already read</em></p></a>');
-
-  // the content of the content DIV when an article is loading
-  articleLoadingTpl = _.template('<h3><%= msg %></h3>');
-
-  // the header content for an article page
-  articleTitleTpl = _.template('<h3><a href="<%= href %>" target="_blank"><%= title %></a></h3>' +
-    '<p class="feed">Feed: <%= feed %></p>' +
-    '<p class="updateTime"><%= update %><time><%= time %></time></p>');
-
-  // button for the prev/next
-  gridLeftButtonTpl = _.template('<div class="ui-grid-a">' +
-    '<div class="ui-block-a">' +
-    '<a data-role="button" data-icon="arrow-l" href="<%= href %>" class="<%= cl %>">previous</a>' +
-    '<em><%= title %></em></div>');
-  gridRightButtonTpl = _.template('<div class="ui-block-b">' +
-    '<a data-role="button" data-icon="arrow-r" data-iconpos="right" href="<%= href %>" class="<%= cl %>">next</a>' +
-    '<em><%= title %></em></div>' +
-    '</div>');
-  
-}
-
-
-
 /*************** BACKBONE Router ************/
 
 // to define the Backbone router of the webapp
@@ -1762,9 +1682,6 @@ $(document).bind('pageinit', function(event){
     // my handler for AJAX errors
     $(document).ajaxError(ajaxErrorHandler);
 
-    // underscore.js
-    compileTemplates();
-
     // backbone.js
     defineModels();
     defineViews();
@@ -1812,10 +1729,9 @@ $(document).bind('pageinit', function(event){
   }
 });
 
-// now we can load jquerymobile
-require(['jquerymobile'],function(){
-  alert("started!");
-});
 
-}); //require
+//loading jQuery Mobile
+require(['jquerymobile'], function(){alert("GO!");});
+
+}); //requirejs
 
