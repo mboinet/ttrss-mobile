@@ -60,11 +60,14 @@ function defineModels(){
 
     sync: function(method, collection, options){    
 
+      // current category ID
+      var catId = window.feedsModel.getCurrentCatId(); 
+
       // only action for a category: read
       if (method == "read"){
         var request = {
           op:             "getFeeds",
-          cat_id:         -4, // all feeds, including virtual
+          cat_id:         catId,
           include_nested: false // does not work with -4
         };
 
@@ -72,7 +75,7 @@ function defineModels(){
           request,
           function(res){
             // reset collection with updated data
-            collection.catId = collection.getCurrentCatId();
+            collection.catId = catId;
             collection.reset(res, {merge: true});
           }, true);
       } else {
