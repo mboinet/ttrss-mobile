@@ -443,7 +443,7 @@ function defineViews(){
       var link = "#" + Backbone.history.fragment + "/feed" + this.model.id;
 
       if ((iconsDir == undefined) || (! this.model.get("has_icon"))){
-        // we can't display with icons or dot not need them
+        // we can't display with icons or do not need them
 
         html = listElementTpl({
           href: link,
@@ -464,12 +464,6 @@ function defineViews(){
       }
 
       this.el.innerHTML = html;
-
-      // refresh the listview
-      var $lv = window.feedsPageView.$("div:jqmData(role='content') " +
-        "ul:jqmData(role='listview')");
-
-      $lv.listview("refresh");
 
       return this;
     },
