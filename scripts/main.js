@@ -358,7 +358,7 @@ function defineViews(){
   // a view for each row of a categories list
   CategoryRowView = Backbone.View.extend({
     render: function(){
-      var html = tpl.listElementTpl({
+      var html = tpl.listElement({
         href:  '#cat' + this.model.id,
         title: this.model.get('title'),
         count: this.model.get('unread') });
@@ -378,7 +378,7 @@ function defineViews(){
     render: function(){
 
       if (this.collection.size() == 0){
-        this.$lv.html(tpl.roListElementTpl({text: "Loading..."}));
+        this.$lv.html(tpl.roListElement({text: "Loading..."}));
       } else {
         // clean up the list
         this.$lv.empty();
@@ -405,7 +405,7 @@ function defineViews(){
         
         if (special.length != 0){
           // we have special cat
-          this.$lv.append(tpl.listSeparatorTpl({ text: 'Special' }));
+          this.$lv.append(tpl.listSeparator({ text: 'Special' }));
           _.each(special, function(s){
             this.$lv.append(s);
           }, this);
@@ -413,7 +413,7 @@ function defineViews(){
 
         if (unread.length != 0){
           // we have other categories
-          this.$lv.append(tpl.listSeparatorTpl({ text: 'With unread articles' }));
+          this.$lv.append(tpl.listSeparator({ text: 'With unread articles' }));
           _.each(unread, function(u){
             this.$lv.append(u);
           }, this);
@@ -421,7 +421,7 @@ function defineViews(){
 
         if (other.length != 0){
           // we have other categories
-          this.$lv.append(tpl.listSeparatorTpl({ text: 'Categories' }));
+          this.$lv.append(tpl.listSeparator({ text: 'Categories' }));
           _.each(other, function(o){
             this.$lv.append(o);
           }, this);
@@ -478,7 +478,7 @@ function defineViews(){
       if ((iconsDir == undefined) || (! this.model.get("has_icon"))){
         // we can't display with icons or do not need them
 
-        html = listElementTpl({
+        html = tpl.listElement({
           href: link,
           title: this.model.get('title'),
           count: this.model.get('unread')
@@ -488,7 +488,7 @@ function defineViews(){
         // we add an icon
         var iconSrc = window.apiPath + iconsDir + "/" + this.model.id + ".ico";
 
-        html = listElementWithIconTpl({
+        html = tpl.listElementWithIcon({
           href: link,
           title: this.model.get('title'),
           count: this.model.get('unread'),
@@ -543,7 +543,7 @@ function defineViews(){
 
       if (this.collection.catId != id){
         // it's loading right now, we don't have any cached data
-        lvData = roListElementTpl({text: "Loading..."});
+        lvData = tpl.roListElement({text: "Loading..."});
       } else {
         // we have data from the good collection, updated or not
 
@@ -553,9 +553,9 @@ function defineViews(){
         if (feeds.length == 0){
           // no elements in the collection
           if (id == -2){
-            lvData = roListElementTpl({text: "No labels"});
+            lvData = tpl.roListElement({text: "No labels"});
           } else {
-            lvData = roListElementTpl({text: "No feeds"});
+            lvData = tpl.roListElement({text: "No feeds"});
           }
         } else {
           // we can add list elements
@@ -587,7 +587,7 @@ function defineViews(){
           var all = "";
           if ((id <= -10) || (id > 0)){
             // only when on real categories or labels
-            all += "<li>" + listElementTpl({
+            all += "<li>" + tpl.listElement({
               href:  "#" + Backbone.history.fragment + "/feed-9",
               title: "All",
               count: unreadCount
@@ -597,12 +597,12 @@ function defineViews(){
 
           // unread separator
           if ((unread != "") && ((other != "")||(all != ""))){
-            unread = listSeparatorTpl({ text: 'With unread' }) + unread;
+            unread = tpl.listSeparator({ text: 'With unread' }) + unread;
           }
 
           // other separator
           if ((other != "") && ((unread != "") || (all != ""))){
-              other = listSeparatorTpl({ text: 'Already read' }) + other;
+              other = tpl.listSeparator({ text: 'Already read' }) + other;
           }      
 
           // we add everything to the view
@@ -687,13 +687,13 @@ function defineViews(){
       if (this.model.get("unread")){
         if (((catId >= 0) && (feedId != -9)) || (feedModel == undefined)){
           // normal cat, we know the feed name
-          html = articleLiElementTpl({
+          html = tpl.articleLiElement({
             href:  link,
             date:  dateStr,
             title: this.model.get('title') });
         } else {
           // special cat, we show the feed name
-          html = articleFeedLiElementTpl({
+          html = tpl.articleFeedLiElement({
             href:  link,
             date:  dateStr,
             title: this.model.get('title'),
@@ -703,13 +703,13 @@ function defineViews(){
         //read article
         if (((catId >= 0) && (feedId != -9)) || (feedModel == undefined)){
           // normal cat, we know the feed name
-          html = articleReadLiElementTpl({
+          html = tpl.articleReadLiElement({
             href:  link,
             date:  dateStr,
             title: this.model.get('title') });
         } else {
           // special cat, we show the feed name
-          html = articleReadFeedLiElementTpl({
+          html = tpl.articleReadFeedLiElement({
             href:  link,
             date:  dateStr,
             title: this.model.get('title'),
@@ -775,7 +775,7 @@ function defineViews(){
 
       if (this.collection.feedId != id){
         // it's loading right now, we don't have any cached data
-        lData += roListElementTpl({text: "Loading..."});
+        lData += tpl.roListElement({text: "Loading..."});
 
         // waiting to be notified a second time
       } else {
@@ -783,7 +783,7 @@ function defineViews(){
 
         if (this.collection.length == 0){
           // no elements in the collection
-          lData += roListElementTpl({text: "No articles"});
+          lData += tpl.roListElement({text: "No articles"});
         } else {
           // we can add list elements
 
@@ -991,7 +991,7 @@ function defineViews(){
       }
       
       $headerDiv.html(
-        articleTitleTpl({
+        tpl.articleTitle({
           href: link,
           title: title,
           feed: feed,
@@ -1045,7 +1045,7 @@ function defineViews(){
 
       } else {
         // no content yet, waiting to be notified
-        $contentDiv.html(articleLoadingTpl({msg: "Loading..."}));
+        $contentDiv.html(tpl.articleLoading({msg: "Loading..."}));
         this.model.once("change:content", this.renderContent, this);
       }
     }, // renderContent
@@ -1107,7 +1107,7 @@ function defineViews(){
         // do we have a previous article?
         var prevArt = window.articlesModel.at(index - 1);
 
-        html += gridLeftButtonTpl({
+        html += tpl.gridLeftButton({
           href:   ln + prevArt.id,
           cl:  "",
           title:  prevArt.get("title")
@@ -1116,7 +1116,7 @@ function defineViews(){
 
       } else {
         // disabled button
-        html += gridLeftButtonTpl({
+        html += tpl.gridLeftButton({
           href:   "#",
           cl:  "ui-disabled",
           title:  ""
@@ -1127,14 +1127,14 @@ function defineViews(){
         // do we have a next article?
         var nextArt = window.articlesModel.at(index + 1);
 
-        html += gridRightButtonTpl({
+        html += tpl.gridRightButton({
           href:   ln + nextArt.id,
           cl:  "",
           title:  nextArt.get("title")
         });
       } else {
         // disabled button
-        html += gridRightButtonTpl({
+        html += tpl.gridRightButton({
           href:   "#",
           cl:  "ui-disabled",
           title:  ""

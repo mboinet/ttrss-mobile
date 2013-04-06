@@ -5,19 +5,19 @@ define(['underscore'], function(_){
   return {
 
     // a jQuery listview separator element
-    listSeparatorTpl : 
+    listSeparator : 
       _.template('<li data-role="list-divider"><%= text %></li>')
     ,
 
     // a jQuery listview link element (to put inside a li)
-    listElementTpl : 
+    listElement : 
       _.template('<a href="<%= href %>">' +
                  '<%= title %>' +
                  '<span class="ui-li-count"><%= count %></span>' +
                  '</a>'),
 
     // a jQuery listview link element with icon (to put inside a li)
-    listElementWithIconTpl : 
+    listElementWithIcon : 
       _.template('<a href="<%= href %>">' +
                  '<img src="<%= src %>" class="ui-li-icon"></img>' +
                  '<%= title %>' +
@@ -25,17 +25,17 @@ define(['underscore'], function(_){
                  '</a>'),
                                   
     // a jQuery listview read-only element
-    roListElementTpl : 
+    roListElement : 
       _.template('<li class="ui-li-static"><%= text %></li>'),
 
     // the content of a LI element for an article
-    articleLiElementTpl : 
+    articleLiElement : 
       _.template('<a href="<%= href %>">' +
       '<h3><%= title %></h3>' +
       '<p class="ui-li-desc"><%= date %></p></a>'),
 
     // the content of a LI element for an article with the feed Name
-    articleFeedLiElementTpl : 
+    articleFeedLiElement : 
       _.template(
         '<a href="<%= href %>">' +
         '<h3><%= title %></h3>' +
@@ -44,7 +44,7 @@ define(['underscore'], function(_){
       ),
 
     // the content of a LI element for a read article
-    articleReadLiElementTpl : 
+    articleReadLiElement : 
       _.template('<a href="<%= href %>">' +
                  '<h3><%= title %></h3>' +
                  '<p class="ui-li-desc"><%= date %>' +
@@ -52,7 +52,7 @@ define(['underscore'], function(_){
                  '</p></a>'),
 
     // the content of a LI element for a read article with the feed Name
-    articleReadFeedLiElementTpl : 
+    articleReadFeedLiElement : 
       _.template(
         '<a href="<%= href %>">' +
         '<h3><%= title %></h3>' +
@@ -61,11 +61,11 @@ define(['underscore'], function(_){
         '&nbsp;&ndash;&nbsp;<em>already read</em></p></a>'),
 
     // the content of the content DIV when an article is loading
-    articleLoadingTpl : 
+    articleLoading : 
       _.template('<h3><%= msg %></h3>'),
 
     // the header content for an article page
-    articleTitleTpl : 
+    articleTitle : 
       _.template(
         '<h3><a href="<%= href %>" target="_blank"><%= title %></a>'+
         '</h3><p class="feed">Feed: <%= feed %></p>' +
@@ -73,14 +73,14 @@ define(['underscore'], function(_){
         '</time></p>'),
 
     // button for the prev/next
-    gridLeftButtonTpl : 
+    gridLeftButton : 
       _.template(
         '<div class="ui-grid-a">' +
         '<div class="ui-block-a">' +
         '<a data-role="button" data-icon="arrow-l" href="<%= href %>" class="<%= cl %>">previous</a>' +
         '<em><%= title %></em></div>'),
 
-    gridRightButtonTpl : 
+    gridRightButton : 
       _.template(
         '<div class="ui-block-b">' +
         '<a data-role="button" data-icon="arrow-r" ' +
