@@ -12,3 +12,7 @@ window.apiPath="/tt-rss/";
 
 /* relative URL from the root to access this webapp */
 window.webappPath="/ttrss-mobile/";
+
+/* Default number of articles to load */
+window.limit=10
+
