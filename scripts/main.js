@@ -1731,7 +1731,7 @@ $(document).bind('pageinit', function(event){
 
 
 //loading jQuery Mobile
-require(['jquerymobile'], function(){alert("GO!");});
+require(['jquerymobile'], function(){});
 
 }); //requirejs
 
