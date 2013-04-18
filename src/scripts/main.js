@@ -19,7 +19,7 @@ requirejs.config({
   paths: {
     'backbone':     'lib/backbone',
     'jquerymobile': 'lib/jquery.mobile-1.3.0.min',
-    'underscore':   'lib/underscore-min',
+    'underscore':   'lib/underscore',
     'jquery':       'lib/jquery-1.9.1'
   } //path
 });
