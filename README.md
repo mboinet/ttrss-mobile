@@ -9,11 +9,12 @@ What is it?
 This webapp is a client for [Tiny Tiny RSS](http://tt-rss.org).
 It uses its [JSON API](http://tt-rss.org/redmine/projects/tt-rss/wiki/JsonApiReference).
 
-I wrote because the default mobile version is slow, very limited and not in good shape.
+I wrote because the default mobile version was somtimes slow, limited and not in good shape.
 
 ttrss-mobile is using:
  * [jQuery Mobile](http://jquerymobile.com/)
  * [Backbone.js](http://backbonejs.org/)
+ * [RequireJS](http://requirejs.org/)
 
 
 How to use it?
