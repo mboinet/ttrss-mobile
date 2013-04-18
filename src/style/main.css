@@ -40,3 +40,10 @@ div#read div[data-role=content]>div.main pre {
   margin: 0px;
   padding: 0px;
 }
+
+/* override so that the title goes as wide as possible
+ * without being over the buttons */
+.ui-header .ui-title{
+  margin-left: 6.2em;
+  margin-right: 6.2em;
+}
