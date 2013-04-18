@@ -305,8 +305,8 @@ function defineModels(){
         return "Must be greater than 0";
       }
 
-      if (attrs.articlesNumber > 60){
-        return "Cannot be greater than 60";
+      if (attrs.articlesNumber > 200){
+        return "Cannot be greater than 200";
       }
     } //validate
   }); // SettingsModel
