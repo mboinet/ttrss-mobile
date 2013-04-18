@@ -20,20 +20,21 @@ ttrss-mobile is using:
 How to use it?
 --------------
 
-You should install the files in a directory on the same host as your *Tiny Tiny RSS* install.
-As the webapp uses AJAX calls to access the API, it should be hosted on the **same domain name**.
+* Download the last version available here: [releases](dist)
+* Unpack the archive somewhere on your server
+* In the scripts dir, copy `conf.js-dist` to `conf.js` and set
+  these variables: `window.apiPath` and `window.webappPath`
 
-You should not put this webapp in a subdir of your *Tiny Tiny RSS* install. On update, it could
+Caveats
+-------
+
+* You should not put this webapp in a subdir of your *Tiny Tiny RSS* install. On update, it could
 be wiped. For more info, see [this post](http://tt-rss.org/forum/viewtopic.php?f=10&t=1216&p=8411#p8359)
 from *HunterZ* on the forum.
 
-Copy `conf.js-dist` to `conf.js` and set these variables:
- * `window.apiPath`
- * `window.webappPath`
-
-Finally, make sure that the user you'll use to connect has the API activated in *Tiny Tiny RSS* preferences :
- * in *Tiny Tiny RSS* go into `Actions` -> `Preferences`
- * `Configuration` -> `Enable external API`
+* Make sure that the user you'll use to connect has the API activated in *Tiny Tiny RSS* preferences :
+  > in *Tiny Tiny RSS* go into `Actions` -> `Preferences`
+  > `Configuration` -> `Enable external API`
 
 
 Current features
