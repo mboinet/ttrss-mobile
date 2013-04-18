@@ -9,7 +9,8 @@ What is it?
 This webapp is a client for [Tiny Tiny RSS](http://tt-rss.org).
 It uses its [JSON API](http://tt-rss.org/redmine/projects/tt-rss/wiki/JsonApiReference).
 
-I wrote because the default mobile version was somtimes slow, limited and not in good shape.
+I started working on this because the default mobile version was somtimes slow,
+limited and not in good shape for future development.
 
 ttrss-mobile is using:
  * [jQuery Mobile](http://jquerymobile.com/)
@@ -33,8 +34,11 @@ be wiped. For more info, see [this post](http://tt-rss.org/forum/viewtopic.php?f
 from *HunterZ* on the forum.
 
 * Make sure that the user you'll use to connect has the API activated in *Tiny Tiny RSS* preferences :
-  > in *Tiny Tiny RSS* go into `Actions` -> `Preferences`
-  > `Configuration` -> `Enable external API`
+  * in *Tiny Tiny RSS* go into `Actions` -> `Preferences`
+  * `Configuration` -> `Enable external API`
+
+* If you want to host this webapp on another hostname than your *Tiny Tiny RSS* instance,
+  you'll find a solution using *CORS* in [this issue](https://github.com/mboinet/ttrss-mobile/issues/36).
 
 
 Current features
