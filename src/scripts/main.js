@@ -362,38 +362,41 @@ function defineViews(){
       var html;
       var catId = window.feedsModel.getCurrentCatId();
       var feedId = window.articlesModel.getCurrentFeedId();
-      var feedModel = window.feedsModel.get(this.model.get("feed_id"));
+      var feedTitle = this.model.get("feed_title");
+      var unread = this.model.get("unread");
 
-      if (this.model.get("unread")){
-        if (((catId >= 0) && (feedId != -9)) || (feedModel == undefined)){
-          // normal cat, we know the feed name
+      if (((catId >= 0) && (feedId != -9)) || (feedTitle == undefined)){
+        // normal cat, we don't need to show the feed name (it's in the header)
+        // or we don't have it yet
+
+        if (unread){
           html = tpl.articleLiElement({
             href:  link,
             date:  dateStr,
             title: this.model.get('title') });
         } else {
-          // special cat, we show the feed name
-          html = tpl.articleFeedLiElement({
-            href:  link,
-            date:  dateStr,
-            title: this.model.get('title'),
-            feed: feedModel.get("title") });
-        }
-      } else {
-        //read article
-        if (((catId >= 0) && (feedId != -9)) || (feedModel == undefined)){
-          // normal cat, we know the feed name
+          // already read
           html = tpl.articleReadLiElement({
             href:  link,
             date:  dateStr,
             title: this.model.get('title') });
+        }
+
+      } else {
+        // special cat, we show the feed name
+
+        if (unread){
+          html = tpl.articleFeedLiElement({
+            href:  link,
+            date:  dateStr,
+            title: this.model.get('title'),
+            feed: feedTitle });
         } else {
-          // special cat, we show the feed name
           html = tpl.articleReadFeedLiElement({
             href:  link,
             date:  dateStr,
             title: this.model.get('title'),
-            feed: feedModel.get("title") });
+            feed: feedTitle });
         }
       }
 
