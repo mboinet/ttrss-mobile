@@ -265,8 +265,10 @@ function defineViews(){
 
           // the all feeds link (-9 is its special ID)
           var all = "";
-          if ((id <= -10) || (id >= 0)){
+          if (((id <= -10) || (id >= 0)) &&
+               (this.collection.length > 1)) {
             // only when on real categories or labels
+            // and when there are more than 1 feed
             all += "<li>" + tpl.listElement({
               href:  "#" + Backbone.history.fragment + "/feed-9",
               title: "All",
