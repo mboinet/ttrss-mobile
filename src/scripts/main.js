@@ -657,10 +657,15 @@ function defineViews(){
         title = "Title loading...";
       }
 
-      var feedModel = window.feedsModel.get(this.model.get("feed_id"));
-      var feed = "loading";
-      if (feedModel != undefined){
-        feed = feedModel.get("title");
+      var feedTitle = this.model.get("feed_title");
+      if (feedTitle == undefined){
+        // no attribute, we need to fetch the title from the feedModel
+        var feedModel = window.feedsModel.get(this.model.get("feed_id"));
+        if (feedModel == undefined){
+          feedTitle = "loading...";
+        } else {
+          feedTitle = feedModel.get("title");
+        }
       }
 
       var time = this.model.get("updated");
@@ -679,7 +684,7 @@ function defineViews(){
         tpl.articleTitle({
           href: link,
           title: title,
-          feed: feed,
+          feed: feedTitle,
           time: time,
           update: updTxt
         })
