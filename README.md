@@ -26,6 +26,19 @@ How to use it?
 * In the scripts dir, copy `conf.js-dist` to `conf.js` and set
   these variables: `window.apiPath` and `window.webappPath`
 
+How to hack on it?
+------------------
+
+You need *[node.js](http://nodejs.org/)* to make a build but you can still
+hack without it.
+
+* Clone this repo on your webserver
+* Hack on the files in *src*
+* Test on the version in *src*
+* Build with make/make.sh
+* Test with the built version in build
+* Make a pull request with your awesome contribution
+
 Caveats
 -------
 
