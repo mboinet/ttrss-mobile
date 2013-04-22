@@ -577,26 +577,10 @@ function defineViews(){
 
   var ArticlePageView = Backbone.View.extend({
 
-    // callback to render the title in the head
-    renderTitle: function(){
-
-      if (this.model.has("title")){
-        // title is available now
-        var $h1Tag = this.$("div:jqmData(role='header') h1");
-        $h1Tag.html(this.model.get("title"));
-      } else {
-        // title will be fetch and we'll be notified by the model
-        this.model.once("change:title", this.renderTitle, this);
-      }
-    }, // renderTitle
-
     render: function(){
 
       // back button
       this.renderBackButton();
-
-      // Title in the header update
-      this.renderTitle();
 
       // header with link, update info & feed
       this.listenTo(this.model, "change:title", this.renderContentHeader);
