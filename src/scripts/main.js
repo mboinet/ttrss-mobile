@@ -129,7 +129,7 @@ requirejs(['jquery','backbone','conf','router','api','utils'],
         }
       );
 
-      // initialize all logout buttons
+      // initialize all back buttons
       $('a.backButton').on('click',
         function(e){
           router.myRouter.setNextTransOptions({reverse: true});
