@@ -129,7 +129,17 @@ define(['jquery'],function($){
         };
         window.localStorage.length = (document.cookie.match(/\=/g) || window.localStorage).length;
       } //if
-    } // localStorageSupport
+    }, // localStorageSupport
+
+    removeAllAttributes: function(element){
+
+      while (element.attributes.length > 0){
+        element.removeAttribute(
+          element.attributes[0].name
+        );
+      }
+
+    } //removeAllAttributes
 
   } //return
 
