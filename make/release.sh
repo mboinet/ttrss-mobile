@@ -1,9 +1,10 @@
 
 ./make.sh
 
-VERSION=`grep Version ../build/index.html | sed 's/^.*<p>Version : \(.*\)<\/p>.*$/\1/'`
+BUILDDIR="../build/"
+VERSION=`grep Version ${BUILDDIR}/index.html | sed 's/^.*<p>Version : \(.*\)<\/p>.*$/\1/'`
 
-rm -v ../build/scripts/conf.js && \
-  cd ../build && \
+rm -v ${BUILDDIR}scripts/conf.js ${BUILDDIR}build.txt && \
+  cd ${BUILDDIR} && \
   tar -jcvf ../dist/ttrss-mobile-$VERSION.tar.bz2 ./
 
