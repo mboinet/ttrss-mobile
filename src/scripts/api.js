@@ -1,7 +1,8 @@
 
 // API functions
 
-define(['jquery','conf','router'], function($, conf, router){
+define(['require','jquery','conf','router','models'],
+       function(require, $, conf, router, models){
 
   function ajaxErrorHandler(event, jqXHR, ajaxSettings, thrownError){
     // TODO: better error handling and output to the user
@@ -43,8 +44,8 @@ define(['jquery','conf','router'], function($, conf, router){
           
           } else {
             // SINGLE_USER_MODE
-            window.settingsModel.set("sid", data.content.session_id);
-            window.settingsModel.save();
+            models.settingsModel.set("sid", data.content.session_id);
+            models.settingsModel.save();
 
             window.location.reload(true);
           }
@@ -65,7 +66,8 @@ define(['jquery','conf','router'], function($, conf, router){
       - async => async call? */
     ttRssApiCall: function(req, success, async){
       var data = req;
-      var sid = window.settingsModel.get("sid");
+      // circular dependency for models
+      var sid = require('models').settingsModel.get("sid");
 
       if (sid != undefined){
         data.sid = sid;

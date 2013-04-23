@@ -1,7 +1,56 @@
 
+/***************** Models *************/
 define(['api','backbone'],function(api, Backbone){
 
-/***************** Models *************/
+  /*********** webapp settings ********/
+  var SettingsModel = Backbone.Model.extend({
+    sync: function(method, model){
+      if (method == "read"){
+        /* read from localStorage every attributes */
+        for (var i = 0; i < window.localStorage.length; i++){
+          var key = window.localStorage.key(i);
+          var val = window.localStorage.getItem(key);
+          if (val != null){
+            model.set(key, val);
+          }
+        }
+      } else if (method == "update"){
+        /* write to localStorage every changed attributes */
+        _.each(model.changed, function(value, key, list){
+          window.localStorage.setItem(key, value);
+        }, this);
+
+      } else if (method == "create"){
+        // set an id to tell Backbone that the server has a copy
+        model.set({id: "mySettings"});
+        /* write to localStorage every attributes */
+        _.each(model.attributes, function(value, key, list){
+          window.localStorage.setItem(key, value);
+        }, this);
+      } else {
+        console.warn("ConfigModel.sync called with unexpected method: " + method);
+      }
+
+    }, //sync
+
+    defaults: {
+      articlesNumber: 10
+    },
+
+    validate: function(attrs, options){
+      // test articlesNumber
+      if (attrs.articlesNumber <= 0){
+        return "Must be greater than 0";
+      }
+
+      if (attrs.articlesNumber > 200){
+        return "Cannot be greater than 200";
+      }
+    } //validate
+  }); // SettingsModel
+
+  // Settings as a variable to be available for other functions
+  var settings = new SettingsModel();
 
   /************ categories ***********/
  
@@ -32,9 +81,6 @@ define(['api','backbone'],function(api, Backbone){
     }
   });
 
-  // keep a global collection
-  window.categoriesModel = new CategoriesModel();
-
 
   /************* feeds ***************/
 
@@ -61,7 +107,7 @@ define(['api','backbone'],function(api, Backbone){
     sync: function(method, collection, options){    
 
       // current category ID
-      var catId = window.feedsModel.getCurrentCatId(); 
+      var catId = this.getCurrentCatId(); 
 
       // only action for a category: read
       if (method == "read"){
@@ -85,16 +131,13 @@ define(['api','backbone'],function(api, Backbone){
 
   });
 
-  // keep a global collection
-  window.feedsModel = new FeedsModel();
-
-
+  var feedsModel = new FeedsModel();
 
 
   /************ 1 article ***************/
 
   // model to store an article
-  window.ArticleModel = Backbone.Model.extend({
+  var ArticleModel = Backbone.Model.extend({
     sync: function(method, model, options){
       if (method == "read"){ 
         api.ttRssApiCall(
@@ -156,7 +199,7 @@ define(['api','backbone'],function(api, Backbone){
   // model for a collection of articles
   var ArticlesModel =  Backbone.Collection.extend({
     comparator: "updated",
-    model: window.ArticleModel,
+    model: ArticleModel,
 
     // data from this feed ID is inside
     feedId: null,
@@ -182,12 +225,12 @@ define(['api','backbone'],function(api, Backbone){
           show_excerpt:   false,
           view_mode:      "adaptive",
           show_content:   true,
-          limit:          window.settingsModel.get("articlesNumber")
+          limit:          settings.get("articlesNumber")
         };
         
         if (feedId == -9){
           // special case (all articles from a whole category)
-          msg.feed_id = window.feedsModel.getCurrentCatId();
+          msg.feed_id = feedsModel.getCurrentCatId();
           msg.is_cat = true;
         } else {
           // normal case
@@ -240,8 +283,6 @@ define(['api','backbone'],function(api, Backbone){
 
   });
 
-  // keep one global collection
-  window.articlesModel = new ArticlesModel();
 
 
 
@@ -260,57 +301,15 @@ define(['api','backbone'],function(api, Backbone){
     }
   });
 
-  // global config model
-  window.configModel = new ConfigModel();
 
-  
-  /*********** webapp settings ********/
-  var SettingsModel = Backbone.Model.extend({
-    sync: function(method, model){
-      if (method == "read"){
-        /* read from localStorage every attributes */
-        for (var i = 0; i < window.localStorage.length; i++){
-          var key = window.localStorage.key(i);
-          var val = window.localStorage.getItem(key);
-          if (val != null){
-            model.set(key, val);
-          }
-        }
-      } else if (method == "update"){
-        /* write to localStorage every changed attributes */
-        _.each(model.changed, function(value, key, list){
-          window.localStorage.setItem(key, value);
-        }, this);
+  return {
+    
+    categoriesModel: new CategoriesModel(),
+    feedsModel: feedsModel,
+    articlesModel: new ArticlesModel(),
+    configModel: new ConfigModel(),
+    settingsModel: settings
 
-      } else if (method == "create"){
-        // set an id to tell Backbone that the server has a copy
-        model.set({id: "mySettings"});
-        /* write to localStorage every attributes */
-        _.each(model.attributes, function(value, key, list){
-          window.localStorage.setItem(key, value);
-        }, this);
-      } else {
-        console.warn("ConfigModel.sync called with unexpected method: " + method);
-      }
-
-    }, //sync
-
-    defaults: {
-      articlesNumber: 10
-    },
-
-    validate: function(attrs, options){
-      // test articlesNumber
-      if (attrs.articlesNumber <= 0){
-        return "Must be greater than 0";
-      }
-
-      if (attrs.articlesNumber > 200){
-        return "Cannot be greater than 200";
-      }
-    } //validate
-  }); // SettingsModel
-
-  window.settingsModel = new SettingsModel();
+  }
 
 }); //define

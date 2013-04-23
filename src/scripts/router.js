@@ -1,6 +1,6 @@
 
 
-define(['backbone'], function(Backbone){
+define(['backbone', 'views', 'models'], function(Backbone, views, models){
 
   /*************** BACKBONE Router ************/
   var MyRouter = Backbone.Router.extend({
@@ -28,10 +28,10 @@ define(['backbone'], function(Backbone){
 
     categories: function(){
       // show the page
-      this.goto(window.categoriesPageView.render().$el);
+      this.goto(views.categoriesPageView.render().$el);
 
       // update model
-      window.categoriesModel.fetch();
+      models.categoriesModel.fetch();
     },
 
     articles: function(catId, feedId){
@@ -41,10 +41,10 @@ define(['backbone'], function(Backbone){
         this.navigate('', {trigger: true});
       } else {
         // go to the view
-        this.goto(window.articlesPageView.render().$el);
+        this.goto(views.articlesPageView.render().$el);
 
         // update model
-        window.articlesModel.fetch();
+        models.articlesModel.fetch();
       }
     },
 
@@ -55,10 +55,10 @@ define(['backbone'], function(Backbone){
         this.navigate('', {trigger: true});
       } else {
         // go to the view
-        this.goto(window.feedsPageView.render().$el);
+        this.goto(views.feedsPageView.render().$el);
 
         // update model
-        window.feedsModel.fetch();
+        models.feedsModel.fetch();
       }
     },
 
@@ -71,16 +71,16 @@ define(['backbone'], function(Backbone){
       } else {
 
         // the model
-        var art = window.articlesModel.get(id);
+        var art = models.articlesModel.get(id);
 
         if (art == undefined){
           /* we could not find the model in the collection
              this must be the first page loaded */
-          art = new window.ArticleModel({id: id});
+          art = new models.ArticleModel({id: id});
         }
 
         // set the model of the view & display it
-        var view = window.articlePageView;
+        var view = views.articlePageView;
 
         view.model = art;
         this.goto(view.render().$el);
@@ -103,7 +103,7 @@ define(['backbone'], function(Backbone){
 
     settings: function(){
       this.setNextTransOptions({reverse: false, transition: "flip"});
-      this.goto(window.settingsPageView.render().$el);
+      this.goto(views.settingsPageView.render().$el);
       this.setNextTransOptions({reverse: true, transition: "flip"});
     },
 
