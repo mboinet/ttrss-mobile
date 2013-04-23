@@ -1,7 +1,7 @@
 
 // API functions
 
-define(['jquery'], function($){
+define(['jquery','conf'], function($, conf){
 
   function ajaxErrorHandler(event, jqXHR, ajaxSettings, thrownError){
     // TODO: better error handling and output to the user
@@ -23,7 +23,7 @@ define(['jquery'], function($){
         // before redirecting user to the login page
         // we need to test if TTRSS is in SINGLE USER MODE
         jQuery.ajax({
-          url: window.apiPath + 'api/',
+          url: conf.apiPath + 'api/',
           contentType: "application/json",
           dataType: 'json',
           cache: 'false',
@@ -73,7 +73,7 @@ define(['jquery'], function($){
 
       jQuery.ajax(
         {
-          url: window.apiPath + 'api/',
+          url: conf.apiPath + 'api/',
           contentType: "application/json",
           dataType: 'json',
           cache: 'false',

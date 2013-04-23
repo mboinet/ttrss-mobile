@@ -166,7 +166,7 @@ function defineViews(){
 
       } else {
         // we add an icon
-        var iconSrc = window.apiPath + iconsDir + "/" + this.model.id + ".ico";
+        var iconSrc = conf.apiPath + iconsDir + "/" + this.model.id + ".ico";
 
         html = tpl.listElementWithIcon({
           href: link,
@@ -933,7 +933,7 @@ function registerLoginPageActions(){
 
     jQuery.ajax(
       {
-        url: window.apiPath + 'api/',
+        url: conf.apiPath + 'api/',
         contentType: "application/json",
         dataType: 'json',
         cache: 'false',
@@ -1075,7 +1075,7 @@ $(document).bind('pageinit', function(event){
     window.myRouter.setNextTransOptions({transition: "fade"});
     
     // start Backbone router
-    if (!Backbone.history.start({pushState: false, root: window.webappPath, silent: false})){
+    if (!Backbone.history.start({pushState: false, root: conf.webappPath, silent: false})){
       alert("Could not start router!");
     }
 

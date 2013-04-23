@@ -1,14 +1,16 @@
 
-/************ global config variables **********/
 /* Copy config.js-dist to config.js
    and set it up for your environment.
 
-   DO NOT USE ANY FILESYSTEM PATH, only relative URLs
-   as seen from your browser */
+   DO NOT USE ANY FILESYSTEM PATH */
 
-/* relative URL from the root to access your Tiny Tiny RSS
-   installation */
-window.apiPath="/tt-rss/";
+define({
 
-/* relative URL from the root to access this webapp */
-window.webappPath="/ttrss-mobile/";
+  /* URL to access your Tiny Tiny RSS installation */
+  apiPath: "/ttrss/",
+
+  /* URL to access this webapp */
+  webappPath: "/ttrss-mobile/"
+
+});
+
