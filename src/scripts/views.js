@@ -27,67 +27,77 @@ define(['jquery', 'models', 'templates','conf','utils'],
   var CategoriesPageView = Backbone.View.extend({
     render: function(){
 
-      if (this.collection.size() == 0){
-        this.$lv.html(tpl.roListElement({text: "Loading..."}));
-      } else {
-        // clean up the list
-        this.$lv.empty();
+      // clean up the list
+      this.$lv.empty();
 
-        // special categories
-        var special = [];
-        /* categories with unread */
-        var unread = [];
-        /* other categories */
-        var other = [];
+      // special categories
+      var special = [];
+      /* categories with unread */
+      var unread = [];
+      /* other categories */
+      var other = [];
 
-        this.collection.forEach(function(cat){
-          var row = new CategoryRowView({model:cat})
-          var li = row.render();
+      this.collection.forEach(function(cat){
+        var row = new CategoryRowView({model:cat})
+        var li = row.render();
 
-          if (cat.id < 0){
-            special.push(li.el);
-          } else if (cat.get("unread") > 0){
-            unread.push(li.el);
-          } else {
-            other.push(li.el);
-          }
+        if (cat.id < 0){
+          special.push(li.el);
+        } else if (cat.get("unread") > 0){
+          unread.push(li.el);
+        } else {
+          other.push(li.el);
+        }
+      }, this);
+      
+      if (special.length != 0){
+        // we have special cat
+        this.$lv.append(tpl.listSeparator({ text: 'Special' }));
+        _.each(special, function(s){
+          this.$lv.append(s);
         }, this);
-        
-        if (special.length != 0){
-          // we have special cat
-          this.$lv.append(tpl.listSeparator({ text: 'Special' }));
-          _.each(special, function(s){
-            this.$lv.append(s);
-          }, this);
-        }
+      }
 
-        if (unread.length != 0){
-          // we have other categories
-          this.$lv.append(tpl.listSeparator({ text: 'With unread articles' }));
-          _.each(unread, function(u){
-            this.$lv.append(u);
-          }, this);
-        }
+      if (unread.length != 0){
+        // we have other categories
+        this.$lv.append(tpl.listSeparator({ text: 'With unread articles' }));
+        _.each(unread, function(u){
+          this.$lv.append(u);
+        }, this);
+      }
 
-        if (other.length != 0){
-          // we have other categories
-          this.$lv.append(tpl.listSeparator({ text: 'Categories' }));
-          _.each(other, function(o){
-            this.$lv.append(o);
-          }, this);
-        }
+      if (other.length != 0){
+        // we have other categories
+        this.$lv.append(tpl.listSeparator({ text: 'Categories' }));
+        _.each(other, function(o){
+          this.$lv.append(o);
+        }, this);
         
       }
 
       this.$lv.listview("refresh");
       return this;
+    }, //render
+
+
+    // called when the data must be refreshed
+    refresh: function(){
+
+      // update associated collection
+      this.collection.fetch();
+
+      return this;
     },
+
     initialize: function() {
-      this.listenTo(this.collection, "reset", this.render);
-    
+
+      // when elements are added or removed
+      this.listenTo(this.collection, "add", this.render);
+      this.listenTo(this.collection, "remove", this.render);
+
       // refresh button for categories
       this.$('a.refreshButton').on('click', this, function(e){
-        e.data.collection.fetch();
+        e.data.refresh();
         $('#catPopupMenu').popup('close');
         e.preventDefault();
       });
@@ -95,6 +105,10 @@ define(['jquery', 'models', 'templates','conf','utils'],
       // store in the object a reference on the listview
       this.$lv = this.$('div[data-role="content"] ' +
         'ul[data-role="listview"]');
+
+      // first time, no data yet in the collection
+      this.$lv.html(tpl.roListElement({text: "Loading..."}));
+
     } // initialize
   });
 

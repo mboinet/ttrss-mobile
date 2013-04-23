@@ -1,8 +1,6 @@
-
-
+/*************** BACKBONE Router ************/
 define(['backbone', 'views', 'models'], function(Backbone, views, models){
 
-  /*************** BACKBONE Router ************/
   var MyRouter = Backbone.Router.extend({
 
     routes: {
@@ -28,10 +26,7 @@ define(['backbone', 'views', 'models'], function(Backbone, views, models){
 
     categories: function(){
       // show the page
-      this.goto(views.categoriesPageView.render().$el);
-
-      // update model
-      models.categoriesModel.fetch();
+      this.goto(views.categoriesPageView.refresh().$el);
     },
 
     articles: function(catId, feedId){

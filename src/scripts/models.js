@@ -72,8 +72,9 @@ define(['api','backbone'],function(api, Backbone){
         };
 
         api.ttRssApiCall(request, function(res){
-          collection.reset(res, {merge: true});
+          collection.set(res);
         }, true);
+
       } else {
         console.log("CategoriesModel.sync method called for an " +
           "unsupported method:" + method);
