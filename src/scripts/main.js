@@ -24,8 +24,8 @@ requirejs.config({
   } //path
 });
 
-requirejs(['jquery','backbone','templates','conf','models','utils','router'],
-  function($, Backbone, tpl, conf, models, utils){
+requirejs(['jquery','backbone','templates','conf','models','utils','router','api'],
+  function($, Backbone, tpl, conf, models, utils, router, api){
 
 
 
@@ -1045,7 +1045,7 @@ $(document).bind('pageinit', function(event){
       function(e){
         e.preventDefault();
         $.mobile.loading( 'show', { text: 'Logging out...', textVisible: true} );
-        logout();
+        api.logout();
       }
     );
 

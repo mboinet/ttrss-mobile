@@ -99,7 +99,7 @@ define(['jquery'], function($){
         'op': 'logout'
       };
 
-      ttRssApiCall(msg,
+      this.ttRssApiCall(msg,
         function(){
           window.myRouter.navigate('login', {trigger: true});
         },
