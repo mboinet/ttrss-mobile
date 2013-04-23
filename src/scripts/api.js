@@ -1,7 +1,7 @@
 
 // API functions
 
-define(['jquery','conf'], function($, conf){
+define(['jquery','conf','router'], function($, conf, router){
 
   function ajaxErrorHandler(event, jqXHR, ajaxSettings, thrownError){
     // TODO: better error handling and output to the user
@@ -39,7 +39,7 @@ define(['jquery','conf'], function($, conf){
               // we store where we're coming from in a query string
               dest += "?from=" + location.hash;
             }
-            window.myRouter.navigate(dest, {trigger: true});
+            router.myRouter.navigate(dest, {trigger: true});
           
           } else {
             // SINGLE_USER_MODE
@@ -101,7 +101,7 @@ define(['jquery','conf'], function($, conf){
 
       this.ttRssApiCall(msg,
         function(){
-          window.myRouter.navigate('login', {trigger: true});
+          router.myRouter.navigate('login', {trigger: true});
         },
         function(m){
           alert('Could not logout :\n' + m);

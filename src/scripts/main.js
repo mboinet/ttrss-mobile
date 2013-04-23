@@ -948,7 +948,7 @@ function registerLoginPageActions(){
         window.settingsModel.set("sid", data.content.session_id);
         window.settingsModel.save();
 
-        window.myRouter.setNextTransOptions({reverse: true, transition: "slideup"});
+        router.myRouter.setNextTransOptions({reverse: true, transition: "slideup"});
 
         // try to get from query string if it exists
         var fragment = location.hash;
@@ -959,7 +959,7 @@ function registerLoginPageActions(){
           nextRoute = ex[1];
         }
 
-        window.myRouter.navigate(nextRoute, {trigger: true});
+        router.myRouter.navigate(nextRoute, {trigger: true});
       } else {
         var msg = "Unknown answer from the API:" + data.content;
         if (data.content.error == "API_DISABLED"){
@@ -1052,7 +1052,7 @@ $(document).bind('pageinit', function(event){
     // initialize all logout buttons
     $('a.backButton').on('click',
       function(e){
-        window.myRouter.setNextTransOptions({reverse: true});
+        router.myRouter.setNextTransOptions({reverse: true});
       }
     );
 
@@ -1072,7 +1072,7 @@ $(document).bind('pageinit', function(event){
     $("div:jqmData(role='page')").page();
 
     // first transition
-    window.myRouter.setNextTransOptions({transition: "fade"});
+    router.myRouter.setNextTransOptions({transition: "fade"});
     
     // start Backbone router
     if (!Backbone.history.start({pushState: false, root: conf.webappPath, silent: false})){

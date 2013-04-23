@@ -2,9 +2,8 @@
 
 define(['backbone'], function(Backbone){
 
-/*************** BACKBONE Router ************/
-
-  MyRouter = Backbone.Router.extend({
+  /*************** BACKBONE Router ************/
+  var MyRouter = Backbone.Router.extend({
 
     routes: {
       "login":                  "login",       // #login
@@ -19,7 +18,7 @@ define(['backbone'], function(Backbone){
 
     defaultRoute: function(path){
       // go to homepage if route unknown
-      window.myRouter.navigate('', {trigger: true});
+      this.navigate('', {trigger: true});
     },
 
     login: function() {
@@ -39,7 +38,7 @@ define(['backbone'], function(Backbone){
       // test feedId is an integer (negative or positive)
       var id = parseInt(feedId);
       if (isNaN(id)){
-        window.myRouter.navigate('', {trigger: true});
+        this.navigate('', {trigger: true});
       } else {
         // go to the view
         this.goto(window.articlesPageView.render().$el);
@@ -53,7 +52,7 @@ define(['backbone'], function(Backbone){
       // test catId is an integer (negative or positive)
       var id = parseInt(catId);
       if (isNaN(id)){
-        window.myRouter.navigate('', {trigger: true});
+        this.navigate('', {trigger: true});
       } else {
         // go to the view
         this.goto(window.feedsPageView.render().$el);
@@ -68,7 +67,7 @@ define(['backbone'], function(Backbone){
 
       if (isNaN(id)){
         // id invalid, go to categories page
-        window.myRouter.navigate('', {trigger: true});
+        this.navigate('', {trigger: true});
       } else {
 
         // the model
@@ -118,7 +117,10 @@ define(['backbone'], function(Backbone){
 
   });
 
-  window.myRouter = new MyRouter();
+
+  return {
+    myRouter: new MyRouter()
+  };
 
 }); //define
 
