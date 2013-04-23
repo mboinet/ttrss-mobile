@@ -14,71 +14,50 @@ define(['jquery', 'models', 'templates','conf','utils'],
         count: this.model.get('unread') });
 
       this.el.innerHTML = html;
+
       return this;
     },
-    initialize: function() {
-      this.el = document.createElement('li');
-      this.listenTo(this.model, "change", this.render);
+
+    updateUnread: function(){
+      var newCount = this.model.get('unread');
+      this.$('span.ui-li-count').html(newCount);
     },
-    tagName: 'li'
+
+    initialize: function() {
+      this.listenTo(this.model, "change:unread", this.updateUnread);
+      this.el = document.createElement('li');
+      this.$el = $(this.el);
+    }
   });
 
   // a view for page with all the categories
   var CategoriesPageView = Backbone.View.extend({
-    render: function(){
 
-      // clean up the list
-      this.$lv.empty();
+    
+    // when a category is added
+    addCat: function(model){
 
-      // special categories
-      var special = [];
-      /* categories with unread */
-      var unread = [];
-      /* other categories */
-      var other = [];
+      var catId = model.get('id');
+      var row = new CategoryRowView({model: model})
 
-      this.collection.forEach(function(cat){
-        var row = new CategoryRowView({model:cat})
-        var li = row.render();
-
-        if (cat.id < 0){
-          special.push(li.el);
-        } else if (cat.get("unread") > 0){
-          unread.push(li.el);
-        } else {
-          other.push(li.el);
-        }
-      }, this);
-      
-      if (special.length != 0){
-        // we have special cat
-        this.$lv.append(tpl.listSeparator({ text: 'Special' }));
-        _.each(special, function(s){
-          this.$lv.append(s);
-        }, this);
+      // if nothing yet, cleanup listview
+      if (this.$('li.ui-li-static').html() == "Loading..."){
+        this.$lv.empty();
       }
 
-      if (unread.length != 0){
-        // we have other categories
-        this.$lv.append(tpl.listSeparator({ text: 'With unread articles' }));
-        _.each(unread, function(u){
-          this.$lv.append(u);
-        }, this);
-      }
+      // li element to add
+      var li = row.render().el;
 
-      if (other.length != 0){
-        // we have other categories
-        this.$lv.append(tpl.listSeparator({ text: 'Categories' }));
-        _.each(other, function(o){
-          this.$lv.append(o);
-        }, this);
-        
+      if (catId < 0){
+        this.$lv.prepend(tpl.listSeparator({ text: 'Categories' }));
+        this.$lv.prepend(li);
+        this.$lv.prepend(tpl.listSeparator({ text: 'Special' }));
+      } else {
+        this.$lv.append(li);
       }
-
       this.$lv.listview("refresh");
-      return this;
-    }, //render
 
+    }, //addCat
 
     // called when the data must be refreshed
     refresh: function(){
@@ -92,8 +71,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
     initialize: function() {
 
       // when elements are added or removed
-      this.listenTo(this.collection, "add", this.render);
-      this.listenTo(this.collection, "remove", this.render);
+      this.collection.on("add", this.addCat, this);
 
       // refresh button for categories
       this.$('a.refreshButton').on('click', this, function(e){
@@ -112,6 +90,12 @@ define(['jquery', 'models', 'templates','conf','utils'],
     } // initialize
   });
 
+
+  var categoriesPage = 
+    new CategoriesPageView({
+      el: $("#categories"),
+      collection: models.categoriesModel
+    });
 
 
 
@@ -877,11 +861,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
   return {
 
-    categoriesPageView:
-      new CategoriesPageView({
-        el: $("#categories"),
-        collection: models.categoriesModel
-      }),
+    categoriesPageView: categoriesPage,
 
     feedsPageView:
       new FeedsPageView({
