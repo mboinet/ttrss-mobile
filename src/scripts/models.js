@@ -155,7 +155,6 @@ define(['api','backbone'],function(api, Backbone){
 
   // model for a collection of articles
   var ArticlesModel =  Backbone.Collection.extend({
-    comparator: "updated",
     model: window.ArticleModel,
 
     // data from this feed ID is inside
@@ -176,13 +175,16 @@ define(['api','backbone'],function(api, Backbone){
       
         var feedId = collection.getCurrentFeedId();
 
+        var orderBy = window.settingsModel.get("articlesOldestFirst") === true ? "date_reverse" : "feed_dates";
+
         // we need to fetch the articles list for this feed
         var msg = {
           op:             "getHeadlines",
           show_excerpt:   false,
           view_mode:      "adaptive",
           show_content:   true,
-          limit:          window.settingsModel.get("articlesNumber")
+          limit:          window.settingsModel.get("articlesNumber"),
+          order_by:       orderBy
         };
         
         if (feedId == -9){
@@ -273,6 +275,10 @@ define(['api','backbone'],function(api, Backbone){
           var key = window.localStorage.key(i);
           var val = window.localStorage.getItem(key);
           if (val != null){
+            if (key === "articlesOldestFirst"){
+              // Convert value back from string to boolean.
+              val = val == "true";
+            }
             model.set(key, val);
           }
         }
@@ -296,7 +302,8 @@ define(['api','backbone'],function(api, Backbone){
     }, //sync
 
     defaults: {
-      articlesNumber: 10
+      articlesNumber: 10,
+      articlesOldestFirst: false
     },
 
     validate: function(attrs, options){
