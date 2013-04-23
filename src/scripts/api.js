@@ -8,6 +8,52 @@ define(['jquery'], function($){
     console.error('ajaxErrorHandler error: ' + thrownError);
   }
 
+  /* Most of the calls (except login, logout, isLoggedIn)
+    require valid login session or will return this
+    error object: {"error":"NOT_LOGGED_IN"} */
+  function apiErrorHandler(msg){
+    if (msg.error != "NOT_LOGGED_IN"){
+      // real error 
+      alert('apiErrorHandler\nUnknown API error message' + msg.error);
+
+    } else {
+      // need to login
+      if (! location.hash.startsWith("#login")){
+
+        // before redirecting user to the login page
+        // we need to test if TTRSS is in SINGLE USER MODE
+        jQuery.ajax({
+          url: window.apiPath + 'api/',
+          contentType: "application/json",
+          dataType: 'json',
+          cache: 'false',
+          data: JSON.stringify({op: "login"}),
+          type: 'post',
+          async: false
+        }).done(function(data){
+          if (data.status == 1){
+            // we're really not logged in
+            var dest = "login"; // new destination
+            
+            if (location.hash != ""){
+              // we store where we're coming from in a query string
+              dest += "?from=" + location.hash;
+            }
+            window.myRouter.navigate(dest, {trigger: true});
+          
+          } else {
+            // SINGLE_USER_MODE
+            window.settingsModel.set("sid", data.content.session_id);
+            window.settingsModel.save();
+
+            window.location.reload(true);
+          }
+        });
+
+      } // else user is already where he needs to be
+    }
+  } // apiErrorHandler
+
   // my handler for AJAX errors
   $(document).ajaxError(ajaxErrorHandler);
 
@@ -46,51 +92,6 @@ define(['jquery'], function($){
     }, // ttRssApiCall
 
 
-    /* Most of the calls (except login, logout, isLoggedIn)
-      require valid login session or will return this
-      error object: {"error":"NOT_LOGGED_IN"} */
-    apiErrorHandler: function(msg){
-      if (msg.error != "NOT_LOGGED_IN"){
-        // real error 
-        alert('apiErrorHandler\nUnknown API error message' + msg.error);
-
-      } else {
-        // need to login
-        if (! location.hash.startsWith("#login")){
-
-          // before redirecting user to the login page
-          // we need to test if TTRSS is in SINGLE USER MODE
-          jQuery.ajax({
-            url: window.apiPath + 'api/',
-            contentType: "application/json",
-            dataType: 'json',
-            cache: 'false',
-            data: JSON.stringify({op: "login"}),
-            type: 'post',
-            async: false
-          }).done(function(data){
-            if (data.status == 1){
-              // we're really not logged in
-              var dest = "login"; // new destination
-              
-              if (location.hash != ""){
-                // we store where we're coming from in a query string
-                dest += "?from=" + location.hash;
-              }
-              window.myRouter.navigate(dest, {trigger: true});
-            
-            } else {
-              // SINGLE_USER_MODE
-              window.settingsModel.set("sid", data.content.session_id);
-              window.settingsModel.save();
-
-              window.location.reload(true);
-            }
-          });
-
-        } // else user is already where he needs to be
-      }
-    },
 
     /* to make a logout call */
     logout: function(){
