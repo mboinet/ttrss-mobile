@@ -1083,8 +1083,8 @@ $(document).bind('pageinit', function(event){
 });
 
 
-//loading jQuery Mobile
-require(['jquerymobile'], function(){});
+  //loading jQuery Mobile after everything
+  require(['jquerymobile'], function(){});
 
 }); //requirejs
 
