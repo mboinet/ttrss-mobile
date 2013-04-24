@@ -24,8 +24,8 @@ requirejs.config({
   } //path
 });
 
-requirejs(['jquery','backbone','conf','router','api','utils'],
-  function($, Backbone, conf, router, api, utils){
+requirejs(['jquery','backbone','conf','router','api','utils','models'],
+  function($, Backbone, conf, router, api, utils, models){
 
 
   /************* utilities ***********/
@@ -59,8 +59,8 @@ requirejs(['jquery','backbone','conf','router','api','utils'],
       .done(function(data){
         if (data.status == 0){
           // we store the sessions id
-          window.settingsModel.set("sid", data.content.session_id);
-          window.settingsModel.save();
+          models.settingsModel.set("sid", data.content.session_id);
+          models.settingsModel.save();
 
           router.myRouter.setNextTransOptions({reverse: true, transition: "slideup"});
 
