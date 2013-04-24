@@ -40,7 +40,7 @@ define(['require','jquery','conf','router','models'],
               // we store where we're coming from in a query string
               dest += "?from=" + location.hash;
             }
-            router.myRouter.navigate(dest, {trigger: true});
+            require('router').myRouter.navigate(dest, {trigger: true});
           
           } else {
             // SINGLE_USER_MODE
