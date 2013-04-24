@@ -824,8 +824,10 @@ define(['jquery', 'models', 'templates','conf','utils'],
   var SettingsPageView = Backbone.View.extend({
 
     render: function(){
-      var artN = this.model.get("articlesNumber");
-      this.$("#articles-number").attr("value",artN);
+      var artNumber = this.model.get("articlesNumber");
+      var artOldestFirst = this.model.get("articlesOldestFirst");
+      this.$("#articles-number").attr("value", artNumber);
+      this.$("#articles-oldest-first").prop("checked", artOldestFirst).checkboxradio("refresh");
       return this;
     },
 
@@ -833,7 +835,10 @@ define(['jquery', 'models', 'templates','conf','utils'],
       /* function called when any form element
       * change on the settings page */
       event.data.model.set(
-        {articlesNumber: $("#articles-number").val()},
+        {
+          articlesNumber: $("#articles-number").val(),
+          articlesOldestFirst: $("#articles-oldest-first").prop("checked")
+        },
         {validate: true}
       );
 
