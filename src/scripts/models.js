@@ -72,6 +72,9 @@ define(['api','backbone'],function(api, Backbone){
         };
 
         api.ttRssApiCall(request, function(res){
+          // sort res by title
+          res.sort(function(a,b){return (a.title > b.title)});
+
           collection.set(res);
         }, true);
 
