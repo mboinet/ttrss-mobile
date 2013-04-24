@@ -103,7 +103,7 @@ define(['require','jquery','conf','router','models'],
 
       this.ttRssApiCall(msg,
         function(){
-          router.myRouter.navigate('login', {trigger: true});
+          require('router').myRouter.navigate('login', {trigger: true});
         },
         function(m){
           alert('Could not logout :\n' + m);
