@@ -74,6 +74,9 @@ define(['require','jquery','conf','router','models'],
 
   // my handler for AJAX errors
   $(document).ajaxError(ajaxErrorHandler);
+  $.ajaxSetup({
+    timeout: 15000 // 15s by default
+  });
 
   return {
 
