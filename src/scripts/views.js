@@ -848,6 +848,10 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
     settingsError: function(event){
       alert(this.model.validationError);
+
+      // reset articles number on error
+      document.getElementById('articles-number').value =
+        this.model.get("articlesNumber");
     },
 
     initialize: function(){
@@ -865,7 +869,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // bind validation errors
       this.model.on("invalid", this.settingsError, this);
-    
     } //init
   });
 
