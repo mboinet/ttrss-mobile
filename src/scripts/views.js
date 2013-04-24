@@ -56,9 +56,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       if (catId < 0){
         // Special category comes at the top with separators
-        this.$lv.prepend(tpl.listSeparator({ text: 'Categories' }));
+        this.$lv.prepend(tpl.listSeparator({ text: '&nbsp;' }));
         this.$lv.prepend(li);
-        this.$lv.prepend(tpl.listSeparator({ text: 'Special' }));
       } else {
         // Other categories comes at the bottom
         this.$lv.append(li);
