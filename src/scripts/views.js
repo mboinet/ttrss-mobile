@@ -294,15 +294,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
       // when a feed is added
       this.collection.on("add", this.addFeed, this);
 
-      // when the first sync goes well, refresh the list
-     /* this.collection.once(
-        "sync",
-        function(){
-          this.$lv.listview("refresh");
-        },
-        this
-      );*/
-     
       // register refresh button for feeds
       this.$("a.refreshButton").on(
         // this is on from jQuery
