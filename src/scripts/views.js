@@ -23,8 +23,14 @@ define(['jquery', 'models', 'templates','conf','utils'],
       this.$('span.ui-li-count').html(newCount);
     },
 
+    updateTitle: function(){
+      var newTitle = this.model.get('title');
+      this.$('a')[0].firstChild.data = newTitle;
+    },
+
     initialize: function() {
       this.listenTo(this.model, "change:unread", this.updateUnread);
+      this.listenTo(this.model, "change:title", this.updateTitle);
       this.el = document.createElement('li');
       this.$el = $(this.el);
     }
