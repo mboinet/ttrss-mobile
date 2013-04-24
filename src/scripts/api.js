@@ -4,6 +4,18 @@
 define(['require','jquery','conf','router','models'],
        function(require, $, conf, router, models){
 
+  // AJAX defaults
+  $.ajaxSetup({
+    url: conf.apiPath + 'api/',
+    contentType: "application/json",
+    dataType: 'json',
+    cache: 'false',
+    type: 'post',
+    timeout: 15000 // 15s by default
+  });
+
+
+  /* AJAX error handler */
   function ajaxErrorHandler(event, jqXHR, ajaxSettings, thrownError){
     // state of the XHR
     var state = jqXHR.readyState;
@@ -41,12 +53,7 @@ define(['require','jquery','conf','router','models'],
         // before redirecting user to the login page
         // we need to test if TTRSS is in SINGLE USER MODE
         jQuery.ajax({
-          url: conf.apiPath + 'api/',
-          contentType: "application/json",
-          dataType: 'json',
-          cache: 'false',
           data: JSON.stringify({op: "login"}),
-          type: 'post',
           async: false
         }).done(function(data){
           if (data.status == 1){
@@ -74,9 +81,6 @@ define(['require','jquery','conf','router','models'],
 
   // my handler for AJAX errors
   $(document).ajaxError(ajaxErrorHandler);
-  $.ajaxSetup({
-    timeout: 15000 // 15s by default
-  });
 
   return {
 
@@ -95,12 +99,7 @@ define(['require','jquery','conf','router','models'],
 
       jQuery.ajax(
         {
-          url: conf.apiPath + 'api/',
-          contentType: "application/json",
-          dataType: 'json',
-          cache: 'false',
           data: JSON.stringify(data),
-          type: 'post',
           async: async
         }
       )
