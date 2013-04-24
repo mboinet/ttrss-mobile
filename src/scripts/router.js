@@ -25,7 +25,7 @@ define(['backbone', 'views', 'models'], function(Backbone, views, models){
     },
 
     categories: function(){
-      // show the page
+      // show the page and ask the data to be refeshed
       this.goto(views.categoriesPageView.refresh().$el);
     },
 
@@ -35,7 +35,7 @@ define(['backbone', 'views', 'models'], function(Backbone, views, models){
       if (isNaN(id)){
         this.navigate('', {trigger: true});
       } else {
-        // go to the view
+        // show the page and ask the data to be refeshed
         this.goto(views.articlesPageView.render().$el);
 
         // update model
@@ -49,11 +49,8 @@ define(['backbone', 'views', 'models'], function(Backbone, views, models){
       if (isNaN(id)){
         this.navigate('', {trigger: true});
       } else {
-        // go to the view
-        this.goto(views.feedsPageView.render().$el);
-
-        // update model
-        models.feedsModel.fetch();
+        // go to the view and ask the data to be refreshed
+        this.goto(views.feedsPageView.refresh().$el);
       }
     },
 

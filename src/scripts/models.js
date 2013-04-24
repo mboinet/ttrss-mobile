@@ -85,6 +85,9 @@ define(['api','backbone'],function(api, Backbone){
           );
 
           collection.set(res);
+
+          // notify by a sync that the sync worked
+          collection.trigger('sync');
         }, true);
 
       } else {
@@ -127,7 +130,7 @@ define(['api','backbone'],function(api, Backbone){
         var request = {
           op:             "getFeeds",
           cat_id:         catId,
-          include_nested: false // does not work with -4
+          include_nested: false
         };
 
         api.ttRssApiCall(
@@ -135,7 +138,10 @@ define(['api','backbone'],function(api, Backbone){
           function(res){
             // reset collection with updated data
             collection.catId = catId;
-            collection.reset(res, {merge: true});
+            collection.set(res);
+
+            // notify by a sync that the sync worked
+            collection.trigger('sync');
           }, true);
       } else {
         console.log("FeedsModel.sync called for an unsupported method: " + method);

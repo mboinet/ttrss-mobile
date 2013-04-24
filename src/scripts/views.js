@@ -29,8 +29,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
     },
 
     initialize: function() {
-      this.listenTo(this.model, "change:unread", this.updateUnread);
-      this.listenTo(this.model, "change:title", this.updateTitle);
+      this.model.on("change:unread", this.updateUnread, this);
+      this.model.on("change:title", this.updateTitle, this);
       this.el = document.createElement('li');
       this.$el = $(this.el);
     }
@@ -44,7 +44,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
     addCat: function(model){
 
       var catId = model.get('id');
-      var row = new CategoryRowView({model: model})
+      var row = new CategoryRowView({model: model});
 
       // if nothing yet, cleanup listview
       if (this.$('li.ui-li-static').html() == "Loading..."){
@@ -62,7 +62,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
         // Other categories comes at the bottom
         this.$lv.append(li);
       }
-      this.$lv.listview("refresh");
 
     }, //addCat
 
@@ -76,9 +75,17 @@ define(['jquery', 'models', 'templates','conf','utils'],
     },
 
     initialize: function() {
-
-      // when elements are added or removed
+      // when a category is added
       this.collection.on("add", this.addCat, this);
+
+      // when the first sync goes well, refresh the list
+      this.collection.once(
+        "sync",
+        function(){
+          this.$lv.listview("refresh");
+        },
+        this
+      );
 
       // refresh button for categories
       this.$('a.refreshButton').on('click', this, function(e){
@@ -110,6 +117,27 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
   // a view for each row of a feeds list
   FeedRowView = Backbone.View.extend({
+
+    // callback to add an icon to the list element
+    addIcon: function(){
+      // get the icons directory from the conf
+      var iconsDir = models.configModel.get("icons_dir");
+
+      var iconSrc = conf.apiPath + iconsDir +
+                    "/" + this.model.id + ".ico";
+
+      var img = document.createElement('img');
+      img.src = iconSrc;
+      img.classList.add("ui-li-icon");
+      img.classList.add("ui-li-thumb");
+
+      // tell the li element to make space for the icon
+      this.el.classList.add("ui-li-has-icon");
+
+      // add the image to the element
+      this.$('a').prepend(img);
+    },
+
     render: function(event){
       var html;
       
@@ -119,7 +147,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       if ((iconsDir == undefined) && (this.model.get("has_icon"))){
         // request to be notifed when icons path will be ready
         // asked by the page view
-        models.configModel.once("change:icons_dir", this.render, this);
+        models.configModel.once("change:icons_dir", this.addIcon, this);
       }
 
       // the link src
@@ -150,9 +178,30 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       return this;
     },
+
+    updateUnread: function(){
+      var newCount = this.model.get('unread');
+      this.$('span.ui-li-count').html(newCount);
+    },
+
+    updateTitle: function(){
+      var newTitle = this.model.get('title');
+      var childNodes = this.$('a')[0].childNodes;
+
+      if (childNodes[0].nodeType == 3){
+        //no icon
+        childNodes[0].data = newTitle;
+      } else {
+        //icon as firstChild
+        childNodes[1].data = newTitle;
+      }
+    },
+
     initialize: function() {
+      this.model.on("change:unread", this.updateUnread, this);
+      this.model.on("change:title", this.updateTitle, this);
       this.el = document.createElement('li');
-      this.listenTo(this.model, "change", this.render);
+      this.$el = $(this.el);
     },
     tagName: 'li'
   });
@@ -163,7 +212,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
   var FeedsPageView = Backbone.View.extend({
 
     // callback to render the title in the header
-    renderTitle: function(){
+    renderTitle: function(event){
       // placeholder for the title of the category
       var $h1Tag = this.$("div:jqmData(role='header') h1");
 
@@ -182,115 +231,77 @@ define(['jquery', 'models', 'templates','conf','utils'],
       }
     }, // renderTitle
 
-    // callback to render the list of feeds of a category
-    renderList: function(){
+    // callback to add a feed to the list
+    addFeed: function(model){
 
-      // data for the listview
-      var lvData = "";
-
-      // real category ID
-      var id = models.feedsModel.getCurrentCatId();
-
-      if (this.collection.catId != id){
-        // it's loading right now, we don't have any cached data
-        lvData = tpl.roListElement({text: "Loading..."});
-      } else {
-        // we have data from the good collection, updated or not
-
-        // an array of the models for this category
-        var feeds = this.collection.where({cat_id: id})
-
-        if (feeds.length == 0){
-          // no elements in the collection
-          if (id == -2){
-            lvData = tpl.roListElement({text: "No labels"});
-          } else {
-            lvData = tpl.roListElement({text: "No feeds"});
-          }
-        } else {
-          // we can add list elements
-          var unreadCount = 0;
-          
-          // feeds with unread
-          var unread = "";
-          feeds.forEach(function(feed){
-            var count = feed.get("unread");
-            if (count > 0){
-              var row = new FeedRowView({model:feed})
-              var li = row.render();
-              unread += li.el.outerHTML;
-              unreadCount += count;
-            }
-          }, this);
-          
-          // other feeds
-          var other = "";
-          feeds.forEach(function(feed){          
-            if (feed.get("unread") <= 0){
-              var row = new FeedRowView({model: feed})
-              var li = row.render();
-              other += li.el.outerHTML;
-            }
-          }, this);
-
-          // the all feeds link (-9 is its special ID)
-          var all = "";
-          if (((id <= -10) || (id >= 0)) &&
-               (this.collection.length > 1)) {
-            // only when on real categories or labels
-            // and when there are more than 1 feed
-            all += "<li>" + tpl.listElement({
-              href:  "#" + Backbone.history.fragment + "/feed-9",
-              title: "All",
-              count: unreadCount
-            }) + "</li>";
-          }
-          
-
-          // unread separator
-          if ((unread != "") && ((other != "")||(all != ""))){
-            unread = tpl.listSeparator({ text: 'With unread' }) + unread;
-          }
-
-          // other separator
-          if ((other != "") && ((unread != "") || (all != ""))){
-              other = tpl.listSeparator({ text: 'Already read' }) + other;
-          }      
-
-          // we add everything to the view
-          lvData = all + unread + other;
-        }
+      // if nothing yet, cleanup listview
+      if (this.$('li.ui-li-static').html() == "Loading..."){
+        this.$lv.empty();
       }
 
-      this.$lv.html(lvData);
-      this.$lv.listview('refresh');
+      var row = new FeedRowView({model: model});
 
-      return this;
-    }, // renderList
+      // li element to add
+      var li = row.render().el;
 
-    render: function(){
+      // append it to the list
+      this.$lv.append(li);
+    }, //addFeed
 
-      this.renderTitle();
-      this.renderList();
-      
-      // get the icons directory from the conf
-      if (! models.configModel.has("icons_dir")){
+    // called when the data must be refreshed
+    refresh: function(){
+      // update associated collection
+      this.collection.fetch();
+
+      // do we have the icons_dir in the config
+      // it will be necessary for the feeds
+      if (models.configModel.get("icons_dir") == undefined){
         models.configModel.fetch();
+        // rows will be notified
       }
-        
+
+      // render the title
+      this.renderTitle();
+
+      // no category names yet
       if (models.categoriesModel.length == 0){
         // request the categories and ask to be notified once
-        models.categoriesModel.once("reset", this.renderTitle, this);
+        models.categoriesModel.once("sync",
+                                    this.renderTitle,
+                                    this);
         models.categoriesModel.fetch();
       }
 
-      return this;
-    }, // render
+      // do we have feeds from this category?
+      var catId = this.collection.getCurrentCatId();
+      if (this.collection.where({cat_id: catId}).length == 0){
+        // no, show loading info
+        lvData = tpl.roListElement({text: "Loading..."});
+        this.$lv.html(lvData);
+        this.$lv.listview("refresh");
 
+        // when sync goes well, refresh the list
+        this.collection.once(
+          "sync",
+          function(){ this.$lv.listview("refresh"); },
+          this);
+      }
+
+      return this;
+    },
 
     initialize: function(){
-      // re-render the list when 
-      this.listenTo(this.collection, "reset", this.renderList);
+      // when a feed is added
+      this.collection.on("add", this.addFeed, this);
+
+      // when the first sync goes well, refresh the list
+     /* this.collection.once(
+        "sync",
+        function(){
+          this.$lv.listview("refresh");
+        },
+        this
+      );*/
      
       // register refresh button for feeds
       this.$("a.refreshButton").on(
@@ -298,7 +309,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
         "click",
         this,
         function(e){
-          e.data.collection.fetch();
+          e.data.refresh();
           $('#feedsMenuPopup').popup('close');
           e.preventDefault();
         }
@@ -307,6 +318,9 @@ define(['jquery', 'models', 'templates','conf','utils'],
       // listview div
       this.$lv = this.$('div[data-role="content"] ' +
         'ul[data-role="listview"]');
+
+      // first time, no data yet in the collection
+      this.$lv.html(tpl.roListElement({text: "Loading..."}));
     } // initialize
     
   }); //FeedsPageView
