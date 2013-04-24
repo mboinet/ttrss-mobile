@@ -5,8 +5,25 @@ define(['require','jquery','conf','router','models'],
        function(require, $, conf, router, models){
 
   function ajaxErrorHandler(event, jqXHR, ajaxSettings, thrownError){
-    // TODO: better error handling and output to the user
-    console.error('ajaxErrorHandler error: ' + thrownError);
+    // state of the XHR
+    var state = jqXHR.readyState;
+
+    if (state == 4){
+      //DONE
+
+      if (jqXHR.status != 200){
+        alert ("There is probably a configuration error." +
+               " An API call returned: "+ jqXHR.status +
+               " (" + jqXHR.statusText + ")");
+      } else {
+        // API errors go to the console
+        console.error('API error: ' + thrownError);
+      }
+    } else {
+      // other states also go to the console too
+      console.error("API error with state " + state + ": " +
+                    thrownError);
+    }
   }
 
   /* Most of the calls (except login, logout, isLoggedIn)
