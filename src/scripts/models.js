@@ -116,7 +116,6 @@ define(['api','backbone'],function(api, Backbone){
 
   // model for a collection of feeds from a category
   var FeedsModel =  Backbone.Collection.extend({
-    catId: null, // nothing by default
     comparator: "title",
     model: FeedModel,
 
@@ -146,7 +145,6 @@ define(['api','backbone'],function(api, Backbone){
           request,
           function(res){
             // reset collection with updated data
-            collection.catId = catId;
             collection.set(res);
 
             // notify by a sync that the sync worked
