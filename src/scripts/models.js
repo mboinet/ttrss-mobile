@@ -1,6 +1,7 @@
 
 /***************** Models *************/
-define(['api','backbone'],function(api, Backbone){
+define(['api','backbone','utils'],
+       function(api, Backbone, utils){
 
   /*********** webapp settings ********/
   var SettingsModel = Backbone.Model.extend({
@@ -117,21 +118,13 @@ define(['api','backbone'],function(api, Backbone){
   // model for a collection of feeds from a category
   var FeedsModel =  Backbone.Collection.extend({
     comparator: "title",
+
     model: FeedModel,
-
-    // to get the current feed ID from the fragment
-    getCurrentCatId: function(){
-      var f  = Backbone.history.fragment;
-      var re = /^cat(-?\d+)(\/.*)?$/;
-      var id = f.replace(re, "$1");
-
-      return parseInt(id);
-    },
 
     sync: function(method, collection, options){    
 
       // current category ID
-      var catId = this.getCurrentCatId(); 
+      var catId = utils.getCurrentCatId(); 
 
       // only action for a category: read
       if (method == "read"){
@@ -164,6 +157,7 @@ define(['api','backbone'],function(api, Backbone){
 
   // model to store an article
   var ArticleModel = Backbone.Model.extend({
+
     sync: function(method, model, options){
       if (method == "read"){ 
         api.ttRssApiCall(
@@ -178,6 +172,8 @@ define(['api','backbone'],function(api, Backbone){
                 "The article with ID " + model.id + " could no be retrieved.");
             } else {
               model.set(m[0]);
+
+              model.trigger("sync");
             }
           }, true);
       } else if (method == "update"){
@@ -226,20 +222,16 @@ define(['api','backbone'],function(api, Backbone){
   var ArticlesModel =  Backbone.Collection.extend({
     model: ArticleModel,
 
-    // to get the current feed ID from the fragment
-    getCurrentFeedId: function(){
-      var f  = Backbone.history.fragment;
-      var re = /^cat-?\d+\/feed(-?\d+)(\/.*)?$/;
-      var id = f.replace(re, "$1");
-
-      return parseInt(id);
-    },       
+    // the feedId of the data in the collection
+    // useful in the case we're in a special category
+    // that regroup multiple feeds
+    feedId: null,
 
     sync: function(method, collection, options) {
 
       if (method == "read"){
       
-        var feedId = collection.getCurrentFeedId();
+        var feedId = utils.getCurrentFeedId();
 
         var orderBy = settings.get("articlesOldestFirst") === true ? "date_reverse" : "feed_dates";
 
@@ -255,7 +247,7 @@ define(['api','backbone'],function(api, Backbone){
         
         if (feedId == -9){
           // special case (all articles from a whole category)
-          msg.feed_id = feedsModel.getCurrentCatId();
+          msg.feed_id = utils.getCurrentCatId();
           msg.is_cat = true;
         } else {
           // normal case
@@ -267,6 +259,9 @@ define(['api','backbone'],function(api, Backbone){
             // efficiently set the collection
             collection.set(res, {merge: true});
           
+            // store the feedId of the collection
+            collection.feedId = feedId;
+
             // notify by a sync that the sync worked
             collection.trigger('sync');
           }, true);
@@ -336,7 +331,8 @@ define(['api','backbone'],function(api, Backbone){
     feedsModel: feedsModel,
     articlesModel: new ArticlesModel(),
     configModel: new ConfigModel(),
-    settingsModel: settings
+    settingsModel: settings,
+    article: ArticleModel
 
   }
 

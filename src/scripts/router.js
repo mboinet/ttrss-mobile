@@ -55,33 +55,14 @@ define(['backbone', 'views', 'models'], function(Backbone, views, models){
       var id = parseInt(artId);
 
       if (isNaN(id)){
-        // id invalid, go to categories page
+        // id invalid, go to categories page (Home)
         this.navigate('', {trigger: true});
       } else {
-
-        // the model
-        var art = models.articlesModel.get(id);
-
-        if (art == undefined){
-          /* we could not find the model in the collection
-             this must be the first page loaded */
-          art = new models.ArticleModel({id: id});
-        }
-
-        // set the model of the view & display it
-        var view = views.articlePageView;
-
-        view.model = art;
-        this.goto(view.render().$el);
+        // go to the view and ask the data to be refreshed
+        this.goto(views.articlePageView.refresh().$el);
 
         // scroll to top
         window.scroll(0,0);
-
-        // tell the model to get all the article data
-        // if we don't have content yet
-        if (! art.has("content")){
-          art.fetch();
-        }
       }
     },
 

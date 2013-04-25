@@ -43,18 +43,6 @@ define(['underscore'], function(_){
         '<p class="ui-li-desc"><%= date %></p></a>'
       ),
 
-    // the content of the content DIV when an article is loading
-    articleLoading : 
-      _.template('<h3><%= msg %></h3>'),
-
-    // the header content for an article page
-    articleTitle : 
-      _.template(
-        '<h3><a href="<%= href %>" target="_blank"><%= title %></a>'+
-        '</h3><p class="feed">Feed: <%= feed %></p>' +
-        '<p class="updateTime"><%= update %><time><%= time %>' +
-        '</time></p>'),
-
     // button for the prev/next
     gridLeftButton : 
       _.template(

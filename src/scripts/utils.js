@@ -139,7 +139,34 @@ define(['jquery'],function($){
         );
       }
 
-    } //removeAllAttributes
+    }, //removeAllAttributes
+
+    // to get the current article ID from the fragment
+    getCurrentArtId: function(){
+      var f  = Backbone.history.fragment;
+      var re = /^cat-?\d+\/feed-?\d+\/art(\d+)$/;
+      var id = f.replace(re, "$1");
+
+      return parseInt(id);
+    },
+
+    // to get the current feed ID from the fragment
+    getCurrentFeedId: function(){
+      var f  = Backbone.history.fragment;
+      var re = /^cat-?\d+\/feed(-?\d+)(\/.*)?$/;
+      var id = f.replace(re, "$1");
+
+      return parseInt(id);
+    },       
+
+    // to get the current feed ID from the fragment
+    getCurrentCatId: function(){
+      var f  = Backbone.history.fragment;
+      var re = /^cat(-?\d+)(\/.*)?$/;
+      var id = f.replace(re, "$1");
+
+      return parseInt(id);
+    }
 
   } //return
 

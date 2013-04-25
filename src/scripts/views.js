@@ -259,7 +259,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       var $h1Tag = this.$("div:jqmData(role='header') h1");
 
       // catId on the fragment
-      var catId = this.collection.getCurrentCatId();
+      var catId = utils.getCurrentCatId();
 
       // cat model
       var catModel = models.categoriesModel.get(catId);
@@ -341,7 +341,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       }
 
       // do we have feeds from this category?
-      var catId = this.collection.getCurrentCatId();
+      var catId = utils.getCurrentCatId();
       if (this.collection.where({cat_id: catId}).length == 0){
         // no, show loading info
         lvData = tpl.roListElement({text: "Loading..."});
@@ -413,8 +413,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
       var dateStr = utils.updateTimeToString(this.model.get("updated"));
 
       var html;
-      var catId = models.feedsModel.getCurrentCatId();
-      var feedId = models.articlesModel.getCurrentFeedId();
+      var catId = utils.getCurrentCatId();
+      var feedId = utils.getCurrentFeedId();
       var feedTitle = this.model.get("feed_title");
       var unread = this.model.get("unread");
 
@@ -479,7 +479,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       var $h1Tag = this.$("div:jqmData(role='header') h1");
 
       // feedId from the fragment
-      var feedId = models.articlesModel.getCurrentFeedId();
+      var feedId = utils.getCurrentFeedId();
       
       // feed model
       var feedModel = models.feedsModel.get(feedId);
@@ -554,7 +554,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
     // called when the data must be refreshed
     refresh: function(){
 
-      var feedId = this.collection.getCurrentFeedId();
+      var feedId = utils.getCurrentFeedId();
 
       // update the collection
       this.collection.fetch();
@@ -575,9 +575,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       }
 
       // do we have articles from this feed?
-      if (this.collection.where({
-          feed_id: new Number(feedId).toString()
-        }).length == 0){
+      if (this.collection.feedId != feedId){
         // no, show loading info
         lvData = tpl.roListElement({text: "Loading..."});
         this.$lv.html(lvData);
@@ -598,6 +596,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       if (this.collection.length == 0){
         // no elements in the collection
         this.$lv.html(tpl.roListElement({text: "No articles"}));
+        this.$lv.listview("refresh");
       }
 
     },
@@ -648,43 +647,96 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
   var ArticlePageView = Backbone.View.extend({
 
-    render: function(){
+    // called when the data must be refreshed
+    refresh: function(){
 
-      // back button
-      this.renderBackButton();
+      var artId = utils.getCurrentArtId();
 
-      // header with link, update info & feed
-      this.listenTo(this.model, "change:title", this.renderContentHeader);
-      this.renderContentHeader();
+      if ((this.model == undefined) ||
+          (this.model.id != artId)){
 
-      var feedModel = models.feedsModel.get(this.model.get("feed_id"));
-      if (feedModel == undefined){
-        // we don't have the feed name
-        models.feedsModel.once("reset", this.renderContentHeader, this);
-        models.feedsModel.fetch();
+        if (this.model != undefined){
+          // stop listening for events from the old model
+          this.stopListening();
+        }
+
+        // no model associated with this view yet or
+        // not the good one
+        var m = models.articlesModel.get(artId);
+
+
+        if (m != undefined){
+          // we found it in the collection
+          this.model = m;
+        } else {
+          // we have to create it
+          this.model = new models.article({id: artId});
+        }
       }
-        
-      // content part, article
-      this.listenTo(this.model, "change:content", this.renderContentHeader);
-      this.renderContent();
+      
+      // update the view parts
+      this.updateBackButton();
 
-      // unread toggle
+      this.updateLink();
+      if (! this.model.has("link")){
+        this.model.once("change:link", this.updateLink, this);
+      }
+
+      this.updateTitle();
+      if (! this.model.has("title")){
+        this.model.once("change:title", this.updateTitle, this);
+      }
+
+      this.updateFeedName();
+      if (utils.getCurrentCatId() < 0){
+        // this is a special feed
+
+        if (! this.model.has("feed_title")){
+          models.articlesModel.once("sync", this.updateFeedName, this);
+          models.articlesModel.fetch();
+        }
+      } else {
+        // this is a normal feed
+        var feedModel = models.feedsModel.get(
+          utils.getCurrentFeedId()
+        );
+
+        if (! feedModel){
+          models.feedsModel.once("sync", this.updateFeedName, this);
+          models.feedsModel.fetch();
+        }
+      }
+
+      this.updateTime();
+      if (! this.model.has("updated")){
+        this.model.once("change:updated", this.updateTime, this);
+      }
+
+      this.updateContent();
+      if (! this.model.has("content")){
+        this.model.once("update:content",
+                        this.updateContent, this);
+        // do the fetch now!
+        this.model.fetch();
+      }
+
       this.renderUnreadToggleButton();
-      this.listenTo(this.model, "change:unread", this.renderUnreadToggleButton);
+      this.listenTo(this.model, "change:unread",
+                    this.renderUnreadToggleButton);
       
-      // unread toggle
       this.renderStarredToggleButton();
-      this.listenTo(this.model, "change:marked", this.renderStarredToggleButton);
+      this.listenTo(this.model, "change:marked",
+                    this.renderStarredToggleButton);
       
-      // unread toggle
       this.renderPublishToggleButton();
-      this.listenTo(this.model, "change:published", this.renderPublishToggleButton);
+      this.listenTo(this.model, "change:published",
+                    this.renderPublishToggleButton);
 
       return this;
     },
 
     // callback to update the href of the back button
-    renderBackButton: function(){
+    updateBackButton: function(){
       // back button href
       var href = Backbone.history.fragment;
       href = "#" + href.substr(0, href.lastIndexOf("/"));
@@ -692,37 +744,47 @@ define(['jquery', 'models', 'templates','conf','utils'],
       this.$("div:jqmData(role='header') a:first").attr("href", href);
     },
 
-
-    renderContentHeader: function(){
-      var $headerDiv = this.$("div:jqmData(role='content') > div.header");
-
-      if ($headerDiv.length == 0){
-        // no div yet
-        this.$("div:jqmData(role='content')").prepend("<div class=\"header\"></div>");
-        $headerDiv = this.$("div:jqmData(role='content') > div.header");
-      }
-
+    updateLink: function(){
       var link = this.model.get("link");
       if (! link){
         link = "";
       }
+      this.$("div:jqmData(role='content') > div.header > h3 > a").
+        attr("href", link); 
+    },
 
+    updateTitle: function(){
       var title = this.model.get("title");
       if (! title){
         title = "Title loading...";
       }
+      this.$("div:jqmData(role='content') > div.header " +
+        '> h3 > a'). html(title);
+    }, 
 
+    updateFeedName: function(){
+
+      // try to use feed_title
       var feedTitle = this.model.get("feed_title");
-      if (feedTitle == undefined){
-        // no attribute, we need to fetch the title from the feedModel
-        var feedModel = models.feedsModel.get(this.model.get("feed_id"));
-        if (feedModel == undefined){
-          feedTitle = "loading...";
-        } else {
+
+      if (! feedTitle){
+        // feed_title cannot be used, we can try on the feed model
+
+        var feedModel = models.feedsModel.get(utils.getCurrentFeedId());
+
+        if (feedModel){
           feedTitle = feedModel.get("title");
+        } else {
+          // no model yet in the collection
+          feedTitle = "loading...";
         }
       }
 
+      this.$("div:jqmData(role='content') > div.header " +
+        '> p.feed span').html(feedTitle);
+    },
+
+    updateTime: function(){
       var time = this.model.get("updated");
       if (! time){
         time = "loading...";
@@ -730,25 +792,12 @@ define(['jquery', 'models', 'templates','conf','utils'],
         time = utils.updateTimeToString(time);
       }
 
-      var updTxt = "Published: ";
-      if (this.model.get("is_updated")){
-        updTxt = "Updated: "
-      }
-      
-      $headerDiv.html(
-        tpl.articleTitle({
-          href: link,
-          title: title,
-          feed: feedTitle,
-          time: time,
-          update: updTxt
-        })
-      ).trigger("create");
-
-    }, //renderContentHeader
+      this.$("div:jqmData(role='content') > div.header " +
+        '> p.updateTime span').html(time);
+    },
 
     // this callback can be called as a method or an event callback
-    renderContent: function(event){
+    updateContent: function(model){
 
       // the div for the content
       var $contentDiv = this.$("div:jqmData(role='content') > div.main");
@@ -788,10 +837,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
         this.model.set({ unread: false });
         this.model.save();
 
-      } else {
-        // no content yet, waiting to be notified
-        $contentDiv.html(tpl.articleLoading({msg: "Loading..."}));
-        this.model.once("change:content", this.renderContent, this);
       }
     }, // renderContent
 
