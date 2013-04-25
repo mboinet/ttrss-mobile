@@ -384,6 +384,10 @@ define(['jquery', 'models', 'templates','conf','utils'],
       this.$lv = this.$('div[data-role="content"] ' +
         'ul[data-role="listview"]');
 
+      // a flag so that the view knows when a listview refresh is
+      // needed
+      this.LVrefreshNeeded = false;
+
       // when sync goes well, refresh the list
       this.collection.on("sync", this.onSync, this);
 
@@ -490,6 +494,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
     addArt: function(model){
 
+      this.LVrefreshNeeded = true;
+
       // if nothing yet, cleanup listview
       if (this.$('li.ui-li-static').html() == "Loading..."){
         this.$lv.empty();
@@ -568,15 +574,32 @@ define(['jquery', 'models', 'templates','conf','utils'],
         models.feedsModel.fetch();
       }
 
-      // do we have articles from this category?
-      if (this.collection.where({feed_id: feedId}).length == 0){
+      // do we have articles from this feed?
+      if (this.collection.where({
+          feed_id: new Number(feedId).toString()
+        }).length == 0){
         // no, show loading info
         lvData = tpl.roListElement({text: "Loading..."});
         this.$lv.html(lvData);
-        this.$lv.listview("refresh");
+        this.LVrefreshNeeded = true;
       }
 
       return this;
+    },
+
+    // this is called each time the collection is
+    // synced
+    onSync: function(){
+      if (this.LVrefreshNeeded){
+        this.$lv.listview("refresh");
+        this.LVrefreshNeeded = false;
+      }
+
+      if (this.collection.length == 0){
+        // no elements in the collection
+        this.$lv.html(tpl.roListElement({text: "No articles"}));
+      }
+
     },
 
     initialize: function(){
@@ -606,17 +629,12 @@ define(['jquery', 'models', 'templates','conf','utils'],
         }
       );
 
+      // a flag so that the view knows when a listview refresh is
+      // needed
+      this.LVrefreshNeeded = false;
+
       // after an update of the collection
-      this.collection.on("sync", function(){
-        this.renderMarkAllButton;
-
-        if (this.collection.length == 0){
-          // no elements in the collection
-          this.$lv.html(tpl.roListElement({text: "No articles"}));
-        }
-
-        this.$lv.listview('refresh');
-      }, this);
+      this.collection.on("sync", this.onSync, this);
 
       // listview div
       this.$lv = this.$('div[data-role="content"] ' +
