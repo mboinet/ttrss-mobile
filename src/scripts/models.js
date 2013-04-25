@@ -64,7 +64,22 @@ define(['api','backbone'],function(api, Backbone){
 
   // model for a collection of categories
   var CategoriesModel =  Backbone.Collection.extend({
-    comparator: "title",
+
+    comparator: function(cat1, cat2){
+      // Special comes first, then by title
+      
+      if ((cat1.id < 0) && (cat2.id >= 0)){
+        // cat1 is special
+        return -1;
+      } else if ((cat1.id >= 0) && (cat2.id < 0)){
+        // cat2 is special
+        return 1;
+      } else {
+        return cat1.get("title").localeCompare(cat2.get("title"));
+      }
+
+    }, //comparator
+
     model: CategoryModel,
     sync: function(method, collection, options){    
       if (method == "read"){
@@ -77,13 +92,7 @@ define(['api','backbone'],function(api, Backbone){
         };
 
         api.ttRssApiCall(request, function(res){
-          // sort res by title
-          res.sort(
-            function(a,b){
-              return (a.title.localeCompare(b.title))
-            }
-          );
-
+          // efficiently set the collection
           collection.set(res);
 
           // notify by a sync that the sync worked

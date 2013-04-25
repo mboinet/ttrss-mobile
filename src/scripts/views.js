@@ -39,6 +39,13 @@ define(['jquery', 'models', 'templates','conf','utils'],
   // a view for page with all the categories
   var CategoriesPageView = Backbone.View.extend({
 
+    // category removed
+    delCat : function(model){
+
+      this.$('#cat' + model.id).remove();
+
+    }, //delCat
+
     
     // when a category is added
     addCat: function(model){
@@ -54,13 +61,34 @@ define(['jquery', 'models', 'templates','conf','utils'],
       // li element to add
       var li = row.render().el;
 
+      // add an id to the li element
+      li.id = 'cat' + catId;
+
       if (catId < 0){
-        // Special category comes at the top with separators
+        // Special category comes at the top with a separator
         this.$lv.prepend(tpl.listSeparator({ text: '&nbsp;' }));
         this.$lv.prepend(li);
       } else {
-        // Other categories comes at the bottom
-        this.$lv.append(li);
+        // Other categories comes at the bottom, we order them
+        // accordingly to the collection order
+        
+        // current position in the collection
+        var pos = this.collection.indexOf(row.model);
+
+        if (pos == this.collection.length - 1){
+          // the last one in the collection
+          this.$lv.append(li);
+        } else {
+          // we insert it before the next in the collection
+          var nextModel = this.collection.at(pos + 1);
+          var nextLi = this.$('#cat' + nextModel.id);
+          if (nextLi[0] != undefined){
+            $(nextLi[0]).before(li);
+          } else {
+            // nextModel has no view yet
+            this.$lv.append(li);
+          }
+        }
       }
 
     }, //addCat
@@ -77,9 +105,11 @@ define(['jquery', 'models', 'templates','conf','utils'],
     initialize: function() {
       // when a category is added
       this.collection.on("add", this.addCat, this);
+      // when a category is removed
+      this.collection.on("remove", this.delCat, this);
 
-      // when the first sync goes well, refresh the list
-      this.collection.once(
+      // when a sync goes well, refresh the list
+      this.collection.on(
         "sync",
         function(){
           this.$lv.listview("refresh");
