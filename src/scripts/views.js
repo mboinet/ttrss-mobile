@@ -281,6 +281,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
     // callback to add a feed to the list
     addFeed: function(model){
 
+      this.LVrefreshNeeded = true;
+
       // if nothing yet, cleanup listview
       if (this.$('li.ui-li-static').html() == "Loading..."){
         this.$lv.empty();
@@ -351,6 +353,15 @@ define(['jquery', 'models', 'templates','conf','utils'],
       return this;
     },
 
+    // this is called each time the collection is
+    // synced
+    onSync: function(){
+      if (this.LVrefreshNeeded){
+        this.$lv.listview("refresh");
+        this.LVrefreshNeeded = false;
+      }
+    },
+
     initialize: function(){
       // when a feed is added
       this.collection.on("add", this.addFeed, this);
@@ -374,10 +385,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
         'ul[data-role="listview"]');
 
       // when sync goes well, refresh the list
-      this.collection.on(
-        "sync",
-        function(){ this.$lv.listview("refresh"); },
-        this);
+      this.collection.on("sync", this.onSync, this);
 
       // first time, no data yet in the collection
       this.$lv.html(tpl.roListElement({text: "Loading..."}));
