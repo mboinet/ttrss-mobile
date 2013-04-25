@@ -47,3 +47,8 @@ div#read div[data-role=content]>div.main pre {
   margin-left: 6.2em;
   margin-right: 6.2em;
 }
+
+/* unread elements in the articles view */
+#articles ul.ui-listview li.read h3 {
+  font-weight: normal;
+}

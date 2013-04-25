@@ -226,9 +226,6 @@ define(['api','backbone'],function(api, Backbone){
   var ArticlesModel =  Backbone.Collection.extend({
     model: ArticleModel,
 
-    // data from this feed ID is inside
-    feedId: null,
-    
     // to get the current feed ID from the fragment
     getCurrentFeedId: function(){
       var f  = Backbone.history.fragment;
@@ -267,8 +264,11 @@ define(['api','backbone'],function(api, Backbone){
 
         api.ttRssApiCall(
           msg, function(res){
-            collection.feedId = collection.getCurrentFeedId();
-            collection.reset(res, {merge: true});
+            // efficiently set the collection
+            collection.set(res, {merge: true});
+          
+            // notify by a sync that the sync worked
+            collection.trigger('sync');
           }, true);
       } else {
         console.log("ArticlesModel.sync called for an unsupported method: " + method);

@@ -36,10 +36,7 @@ define(['backbone', 'views', 'models'], function(Backbone, views, models){
         this.navigate('', {trigger: true});
       } else {
         // show the page and ask the data to be refeshed
-        this.goto(views.articlesPageView.render().$el);
-
-        // update model
-        models.articlesModel.fetch();
+        this.goto(views.articlesPageView.refresh().$el);
       }
     },
 

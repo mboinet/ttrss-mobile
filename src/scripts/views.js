@@ -401,44 +401,38 @@ define(['jquery', 'models', 'templates','conf','utils'],
         // normal cat, we don't need to show the feed name (it's in the header)
         // or we don't have it yet
 
-        if (unread){
-          html = tpl.articleLiElement({
-            href:  link,
-            date:  dateStr,
-            title: this.model.get('title') });
-        } else {
-          // already read
-          html = tpl.articleReadLiElement({
-            href:  link,
-            date:  dateStr,
-            title: this.model.get('title') });
-        }
+        html = tpl.articleLiElement({
+          href:  link,
+          date:  dateStr,
+          title: this.model.get('title') });
 
       } else {
         // special cat, we show the feed name
 
-        if (unread){
-          html = tpl.articleFeedLiElement({
-            href:  link,
-            date:  dateStr,
-            title: this.model.get('title'),
-            feed: feedTitle });
-        } else {
-          html = tpl.articleReadFeedLiElement({
-            href:  link,
-            date:  dateStr,
-            title: this.model.get('title'),
-            feed: feedTitle });
-        }
+        html = tpl.articleFeedLiElement({
+          href:  link,
+          date:  dateStr,
+          title: this.model.get('title'),
+          feed: feedTitle });
       }
 
       this.el.innerHTML = html;
+      if (! unread){
+        this.el.classList.add("read");
+      }
 
       return this;
     }, // render
 
+    updateUnread: function(){
+      this.el.classList.toggle("read");
+    },
+
     initialize: function() {
       this.el = document.createElement('li');
+      this.$el = $(this.el);
+
+      this.model.on('change:unread', this.updateUnread, this);
     },
 
     tagName: 'li'
@@ -449,7 +443,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
   var ArticlesPageView = Backbone.View.extend({
 
     // callback to update the href of the back button
-    renderBackButton: function(){
+    updateBackButton: function(){
       // back button href
       var href = Backbone.history.fragment;
       href = "#" + href.substr(0, href.lastIndexOf("/"));
@@ -457,65 +451,65 @@ define(['jquery', 'models', 'templates','conf','utils'],
       this.$("div:jqmData(role='header') a:first").attr("href", href);
     },
 
-    // callback to render the title in the header
-    renderTitle: function(){
+    // callback to update the title in the header
+    updateTitle: function(){
 
-      // catId on the fragment
-      var feedId = models.articlesModel.getCurrentFeedId();
-      
       // placeholder for the title of the category
       var $h1Tag = this.$("div:jqmData(role='header') h1");
 
+      // feedId from the fragment
+      var feedId = models.articlesModel.getCurrentFeedId();
+      
       // feed model
       var feedModel = models.feedsModel.get(feedId);
-      
       if (feedModel == undefined){
         // default title
         $h1Tag.html("Articles");
-
       } else {
         // title is available now
         $h1Tag.html(feedModel.get("title"));
       }
-    }, // renderTitle
+    }, //updateTitle
 
-    // callback to render the listview of articles of a feed
-    renderList: function(){
+    addArt: function(model){
 
-      // data to add to the listview
-      var lData = "";
+      // if nothing yet, cleanup listview
+      if (this.$('li.ui-li-static').html() == "Loading..."){
+        this.$lv.empty();
+      }
 
-      // real feed ID
-      var id = models.articlesModel.getCurrentFeedId();
+      var row = new ArticleRowView({model: model});
 
-      if (this.collection.feedId != id){
-        // it's loading right now, we don't have any cached data
-        lData += tpl.roListElement({text: "Loading..."});
+      // li element to add
+      var li = row.render().el;
 
-        // waiting to be notified a second time
+      // add an id to the li element to find it back easily later
+      li.id = 'art' + model.id;
+
+      // append it to the list at the good position
+      var pos = this.collection.indexOf(row.model);
+
+      if (pos == this.collection.length - 1){
+        // the last one in the collection
+        this.$lv.append(li);
       } else {
-        // we have data from the good collection, updated or not
-
-        if (this.collection.length == 0){
-          // no elements in the collection
-          lData += tpl.roListElement({text: "No articles"});
+        // we insert it before the next in the collection
+        var nextModel = this.collection.at(pos + 1);
+        var nextLi = this.$('#art' + nextModel.id);
+        if (nextLi[0] != undefined){
+          $(nextLi[0]).before(li);
         } else {
-          // we can add list elements
-
-          this.collection.forEach(function(article){          
-            var row = new ArticleRowView({model: article})
-            var li = row.render();
-            lData += li.el.outerHTML;
-          }, this);
-
-          // TODO check if there is more to load
+          // nextModel has no view yet
+          this.$lv.append(li);
         }
       }
-      this.$lv.html(lData);
-      this.$lv.listview('refresh');
 
-      return this;
-    }, // renderList
+    }, //addArt
+
+
+    delArt: function(model){
+      this.$('#art' + model.id).remove();
+    }, //delArt
 
     renderMarkAllButton: function(){
       var but = this.$("a.toggleUnreadButton");
@@ -534,22 +528,35 @@ define(['jquery', 'models', 'templates','conf','utils'],
       }
     },
 
-    // callback to render the title in the header
-    render: function(){
+    // called when the data must be refreshed
+    refresh: function(){
 
-      this.renderBackButton();
-      this.renderTitle();
-      this.renderList();
-      this.renderMarkAllButton();
+      var feedId = this.collection.getCurrentFeedId();
+
+      // update the collection
+      this.collection.fetch();
+
+      // update the back button
+      this.updateBackButton();
+
+      // render the title with the feed name
+      this.updateTitle();
 
       /* if the feed model isn't available, we need to
       fetch it and update the title when it will be
       ready */
-      var feedModel = models.feedsModel.get(
-        models.articlesModel.getCurrentFeedId());
+      var feedModel = models.feedsModel.get(feedId);
       if (feedModel == undefined){
-        models.feedsModel.once("reset", this.renderTitle, this);
+        models.feedsModel.once("sync", this.updateTitle, this);
         models.feedsModel.fetch();
+      }
+
+      // do we have articles from this category?
+      if (this.collection.where({feed_id: feedId}).length == 0){
+        // no, show loading info
+        lvData = tpl.roListElement({text: "Loading..."});
+        this.$lv.html(lvData);
+        this.$lv.listview("refresh");
       }
 
       return this;
@@ -557,9 +564,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
     initialize: function(){
 
-      // render the list when elements are added or removed
-      this.listenTo(this.collection, "reset", this.renderList);
-      this.listenTo(this.collection, "update", this.renderList);
+      this.collection.on("add", this.addArt, this);
+      this.collection.on("remove", this.delArt, this);
 
       // register refresh button clicks
       this.$('a.refreshButton').on(
@@ -577,18 +583,23 @@ define(['jquery', 'models', 'templates','conf','utils'],
         'click',
         this,
         function(e){
-
           e.data.collection.toggleUnread();
           $("#artMenuPopup").popup('close');
           e.preventDefault();
         }
       );
 
-      // render the mark all button every time the collection
-      // change
-      this.listenTo(this.collection, "reset", this.renderMarkAllButton);
-      this.listenTo(this.collection, "change", this.renderMarkAllButton);
-      this.listenTo(this.collection, "update", this.renderMarkAllButton);
+      // after an update of the collection
+      this.collection.on("sync", function(){
+        this.renderMarkAllButton;
+
+        if (this.collection.length == 0){
+          // no elements in the collection
+          this.$lv.html(tpl.roListElement({text: "No articles"}));
+        }
+
+        this.$lv.listview('refresh');
+      }, this);
 
       // listview div
       this.$lv = this.$('div[data-role="content"] ' +

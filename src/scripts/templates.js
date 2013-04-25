@@ -43,23 +43,6 @@ define(['underscore'], function(_){
         '<p class="ui-li-desc"><%= date %></p></a>'
       ),
 
-    // the content of a LI element for a read article
-    articleReadLiElement : 
-      _.template('<a href="<%= href %>">' +
-                 '<h3><%= title %></h3>' +
-                 '<p class="ui-li-desc"><%= date %>' +
-                 '&nbsp;&ndash;&nbsp;<em>already read</em>' +
-                 '</p></a>'),
-
-    // the content of a LI element for a read article with the feed Name
-    articleReadFeedLiElement : 
-      _.template(
-        '<a href="<%= href %>">' +
-        '<h3><%= title %></h3>' +
-        '<p class="ul-li-desc"><strong><%= feed %>' +
-        '</strong></p><p class="ui-li-desc"><%= date %>' +
-        '&nbsp;&ndash;&nbsp;<em>already read</em></p></a>'),
-
     // the content of the content DIV when an article is loading
     articleLoading : 
       _.template('<h3><%= msg %></h3>'),
