@@ -282,8 +282,24 @@ define(['jquery', 'models', 'templates','conf','utils'],
       // add an id to the li element to find it back easily later
       li.id = 'feed' + model.id;
 
-      // append it to the list
-      this.$lv.append(li);
+      // append it to the list at the good position
+      var pos = this.collection.indexOf(row.model);
+
+      if (pos == this.collection.length - 1){
+        // the last one in the collection
+        this.$lv.append(li);
+      } else {
+        // we insert it before the next in the collection
+        var nextModel = this.collection.at(pos + 1);
+        var nextLi = this.$('#feed' + nextModel.id);
+        if (nextLi[0] != undefined){
+          $(nextLi[0]).before(li);
+        } else {
+          // nextModel has no view yet
+          this.$lv.append(li);
+        }
+      }
+
     }, //addFeed
 
     // called when the data must be refreshed
