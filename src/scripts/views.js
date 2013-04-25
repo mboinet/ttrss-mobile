@@ -346,8 +346,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
         // no, show loading info
         lvData = tpl.roListElement({text: "Loading..."});
         this.$lv.html(lvData);
-        this.$lv.listview("refresh");
 
+        this.LVrefreshNeeded = true;
       }
 
       return this;
