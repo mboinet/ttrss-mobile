@@ -144,7 +144,7 @@ define(['api','backbone'],function(api, Backbone){
         api.ttRssApiCall(
           request,
           function(res){
-            // reset collection with updated data
+            // set collection with updated data
             collection.set(res);
 
             // notify by a sync that the sync worked
