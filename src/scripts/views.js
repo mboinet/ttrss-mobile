@@ -261,6 +261,11 @@ define(['jquery', 'models', 'templates','conf','utils'],
       }
     }, // renderTitle
 
+    // callback to delete a feed from the list
+    delFeed: function(model){
+      this.$('#feed' + model.id).remove();
+    },
+
     // callback to add a feed to the list
     addFeed: function(model){
 
@@ -273,6 +278,9 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // li element to add
       var li = row.render().el;
+
+      // add an id to the li element to find it back easily later
+      li.id = 'feed' + model.id;
 
       // append it to the list
       this.$lv.append(li);
@@ -310,11 +318,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
         this.$lv.html(lvData);
         this.$lv.listview("refresh");
 
-        // when sync goes well, refresh the list
-        this.collection.once(
-          "sync",
-          function(){ this.$lv.listview("refresh"); },
-          this);
       }
 
       return this;
@@ -323,6 +326,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
     initialize: function(){
       // when a feed is added
       this.collection.on("add", this.addFeed, this);
+      // when a feed is deleted
+      this.collection.on("remove", this.delFeed, this);
 
       // register refresh button for feeds
       this.$("a.refreshButton").on(
@@ -339,6 +344,12 @@ define(['jquery', 'models', 'templates','conf','utils'],
       // listview div
       this.$lv = this.$('div[data-role="content"] ' +
         'ul[data-role="listview"]');
+
+      // when sync goes well, refresh the list
+      this.collection.on(
+        "sync",
+        function(){ this.$lv.listview("refresh"); },
+        this);
 
       // first time, no data yet in the collection
       this.$lv.html(tpl.roListElement({text: "Loading..."}));
