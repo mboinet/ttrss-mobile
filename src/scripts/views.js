@@ -67,6 +67,9 @@ define(['jquery', 'models', 'templates','conf','utils'],
       if (catId < 0){
         // Special category comes at the top with a separator
         this.$lv.prepend(tpl.listSeparator({ text: '&nbsp;' }));
+
+        //TODO Labels category can be added here
+
         this.$lv.prepend(li);
       } else {
         // Other categories comes at the bottom, we order them
