@@ -53,6 +53,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
       var catId = model.get('id');
       var row = new CategoryRowView({model: model});
 
+      this.LVrefreshNeeded = true;
+
       // if nothing yet, cleanup listview
       if (this.$('li.ui-li-static').html() == "Loading..."){
         this.$lv.empty();
@@ -105,20 +107,27 @@ define(['jquery', 'models', 'templates','conf','utils'],
       return this;
     },
 
+    // this is called each time the collection is
+    // synced
+    onSync: function(){
+      if (this.LVrefreshNeeded){
+        this.$lv.listview("refresh");
+        this.LVrefreshNeeded = false;
+      }
+    },
+
     initialize: function() {
       // when a category is added
       this.collection.on("add", this.addCat, this);
       // when a category is removed
       this.collection.on("remove", this.delCat, this);
 
+      // a flag so that the view knows when a listview refresh is
+      // needed
+      this.LVrefreshNeeded = false;
+
       // when a sync goes well, refresh the list
-      this.collection.on(
-        "sync",
-        function(){
-          this.$lv.listview("refresh");
-        },
-        this
-      );
+      this.collection.on("sync", this.onSync, this);
 
       // refresh button for categories
       this.$('a.refreshButton').on('click', this, function(e){
