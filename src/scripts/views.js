@@ -599,6 +599,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
         this.$lv.listview("refresh");
       }
 
+      // update the mark all as read/unread button
+      this.renderMarkAllButton();
     },
 
     initialize: function(){
@@ -627,6 +629,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
           e.preventDefault();
         }
       );
+
 
       // a flag so that the view knows when a listview refresh is
       // needed
