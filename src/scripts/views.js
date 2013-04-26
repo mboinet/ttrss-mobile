@@ -828,8 +828,9 @@ define(['jquery', 'models', 'templates','conf','utils'],
         }
         
         // mark as read and save it to the backend
-        this.model.set({ unread: false });
-        this.model.save();
+        if (this.model.get("unread")){
+          this.model.save({ unread: false});
+        }
 
       } else {
         $contentDiv.html("Content loading...");
