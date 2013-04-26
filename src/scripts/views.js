@@ -142,7 +142,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // first time, no data yet in the collection
       this.$lv.html(tpl.roListElement({text: "Loading..."}));
-
     } // initialize
   });
 
@@ -345,9 +344,9 @@ define(['jquery', 'models', 'templates','conf','utils'],
       if (this.collection.where({cat_id: catId}).length == 0){
         // no, show loading info
         lvData = tpl.roListElement({text: "Loading..."});
-        this.$lv.html(lvData);
 
-        this.LVrefreshNeeded = true;
+        this.$lv.html(lvData);
+        this.$lv.listview("refresh");
       }
 
       return this;
@@ -579,7 +578,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
         // no, show loading info
         lvData = tpl.roListElement({text: "Loading..."});
         this.$lv.html(lvData);
-        this.LVrefreshNeeded = true;
+        this.$lv.listview("refresh");
       }
 
       return this;
