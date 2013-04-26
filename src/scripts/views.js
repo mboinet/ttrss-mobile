@@ -725,6 +725,15 @@ define(['jquery', 'models', 'templates','conf','utils'],
         this.model.fetch();
       }
 
+      // update previous/next links at the bottom
+      if (models.articlesModel.length <= 1){
+        // collection empty, update it
+        models.articlesModel.on("sync", this.renderPrevNext, this);
+        models.articlesModel.fetch();
+      } else {
+        this.renderPrevNext();
+      }
+      
       this.renderUnreadToggleButton();
       this.listenTo(this.model, "change:unread",
                     this.renderUnreadToggleButton);
@@ -823,15 +832,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
         $contentDiv.trigger('create');
 
-        // add previous/next links at the bottom
-        if (models.articlesModel.length == 0){
-          // collection empty, update it
-          models.articlesModel.once("reset", this.renderPrevNext, this);
-          models.articlesModel.fetch();
-        } else {
-          this.renderPrevNext();
-        }
-        
         // mark as read and save it to the backend
         if (this.model.get("unread")){
           this.model.save({ unread: false});
@@ -895,6 +895,10 @@ define(['jquery', 'models', 'templates','conf','utils'],
       var ln = "#" + Backbone.history.fragment;
       ln = ln.substring(0, ln.lastIndexOf("art") + 3);
 
+      // flag to tell if there is a prev/next article
+      var hasPrev = false;
+      var hasNext = false;
+
       if (index > 0){
         // do we have a previous article?
         var prevArt = models.articlesModel.at(index - 1);
@@ -905,6 +909,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
           title:  prevArt.get("title")
         });
         
+        hasPrev = true;
 
       } else {
         // disabled button
@@ -924,6 +929,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
           cl:  "",
           title:  nextArt.get("title")
         });
+
+        hasNext = true;
       } else {
         // disabled button
         html += tpl.gridRightButton({
@@ -934,8 +941,11 @@ define(['jquery', 'models', 'templates','conf','utils'],
       }
 
       // we now have the HTML ready, add it to the content
-      this.$("div:jqmData(role='content') > div.main")
-        .append(html).trigger('create');
+      if (hasPrev || hasNext){
+        // only if we need thoses links
+        this.$("div:jqmData(role='content') > div.main")
+          .append(html).trigger('create');
+      }
 
     },
 
