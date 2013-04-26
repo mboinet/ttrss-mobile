@@ -218,7 +218,36 @@ define(['api','backbone','utils'],
         console.log("ArticleModel.toggle called with an " +
           "unexpected parameter : " + what);
       }
-    } // toggle
+    }, // toggle
+
+    unreadChanged: function(){
+
+      var prevVal = this.previous("unread");
+      var newVal = this.get("unread");
+
+      if ((prevVal != undefined) &&
+          (prevVal != newVal)){
+
+        // try to update the parent models of the unread count
+        var count = (newVal ? 1 : -1);      
+
+        // update feed count
+        var feedModel = feedsModel.get(utils.getCurrentFeedId());
+        if (feedModel){
+          var unread = feedModel.get("unread");
+          feedModel.set({unread: unread + count});
+        }
+      }
+
+    }, //unreadChanged
+
+    initialize: function(){
+
+      // be notified when unread changed
+      this.on("change:unread", this.unreadChanged, this);
+
+    } //initialize
+
   });
   
 
