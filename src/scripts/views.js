@@ -193,7 +193,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       }
 
       // the link src
-      var link = "#" + Backbone.history.fragment + "/feed" + this.model.id;
+      var link = "#cat" + utils.getCurrentCatId() + "/feed" + this.model.id;
 
       if ((iconsDir == undefined) || (! this.model.get("has_icon"))){
         // we can't display with icons or do not need them
