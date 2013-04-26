@@ -15,12 +15,24 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       this.el.innerHTML = html;
 
+      // make articles with 0 unread not bold
+      if (this.model.get('unread') == 0){
+        this.el.classList.add('read');
+      }
+
       return this;
     },
 
     updateUnread: function(){
       var newCount = this.model.get('unread');
       this.$('span.ui-li-count').html(newCount);
+
+      // make articles with 0 unread not bold
+      if (this.model.get('unread') == 0){
+        this.el.classList.add('read');
+      } else {
+        this.el.classList.remove('read');
+      }
     },
 
     updateTitle: function(){
@@ -214,6 +226,11 @@ define(['jquery', 'models', 'templates','conf','utils'],
         });
       }
 
+      // make articles with 0 unread not bold
+      if (this.model.get('unread') == 0){
+        this.el.classList.add('read');
+      }
+
       this.el.innerHTML = html;
 
       return this;
@@ -222,6 +239,13 @@ define(['jquery', 'models', 'templates','conf','utils'],
     updateUnread: function(){
       var newCount = this.model.get('unread');
       this.$('span.ui-li-count').html(newCount);
+
+      // make articles with 0 unread not bold
+      if (this.model.get('unread') == 0){
+        this.el.classList.add('read');
+      } else {
+        this.el.classList.remove('read');
+      }
     },
 
     updateTitle: function(){
