@@ -691,8 +691,9 @@ define(['jquery', 'models', 'templates','conf','utils'],
         // this is a special feed
 
         if (! this.model.has("feed_title")){
-          models.articlesModel.once("sync", this.updateFeedName, this);
-          models.articlesModel.fetch();
+          models.articlesModel.once("change:feed_title", this.updateFeedName, this);
+          // no need to fetch the articles, this will be done for
+          // the next/prev links if needed
         }
       } else {
         // this is a normal feed

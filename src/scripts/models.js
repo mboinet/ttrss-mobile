@@ -164,6 +164,7 @@ define(['api','backbone','utils'],
           { op: 'getArticle',
             article_id: model.id },
           function(m){
+
             if (m.length == 0){
               console.log("ArticleModel.sync: recived nothing for article " +
                 model.id);
@@ -171,7 +172,13 @@ define(['api','backbone','utils'],
               model.set("content",
                 "The article with ID " + model.id + " could no be retrieved.");
             } else {
+
               model.set(m[0]);
+
+              // add the model in the collection if needed
+              if (!articlesModel.get(model.id)){
+                articlesModel.add([model]);
+              }
 
               model.trigger("sync");
             }
@@ -257,7 +264,7 @@ define(['api','backbone','utils'],
         api.ttRssApiCall(
           msg, function(res){
             // efficiently set the collection
-            collection.set(res, {merge: true});
+            collection.set(res);
           
             // store the feedId of the collection
             collection.feedId = feedId;
@@ -304,7 +311,9 @@ define(['api','backbone','utils'],
          function(m){ jQuery.noop(); } , true);
     }
 
-  });
+  }); // ArticlesModel
+
+  var articlesModel = new ArticlesModel();
 
 
 
@@ -329,7 +338,7 @@ define(['api','backbone','utils'],
     
     categoriesModel: new CategoriesModel(),
     feedsModel: feedsModel,
-    articlesModel: new ArticlesModel(),
+    articlesModel: articlesModel,
     configModel: new ConfigModel(),
     settingsModel: settings,
     article: ArticleModel
