@@ -41,9 +41,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
     // category removed
     delCat : function(model){
-
       this.$('#cat' + model.id).remove();
-
+      this.LVrefreshNeeded = true;
     }, //delCat
 
     
@@ -275,6 +274,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
     // callback to delete a feed from the list
     delFeed: function(model){
       this.$('#feed' + model.id).remove();
+      this.LVrefreshNeeded = true;
     },
 
     // callback to add a feed to the list
@@ -532,6 +532,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
     delArt: function(model){
       this.$('#art' + model.id).remove();
+      this.LVrefreshNeeded = true;
     }, //delArt
 
     renderMarkAllButton: function(){
