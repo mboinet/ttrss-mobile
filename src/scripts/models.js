@@ -4,7 +4,7 @@ define(['api','backbone','utils'],
        function(api, Backbone, utils){
 
   /*********** webapp settings ********/
-  var SettingsModel = Backbone.Model.extend({
+  var Settings = Backbone.Model.extend({
     sync: function(method, model){
       if (method == "read"){
         /* read from localStorage every attributes */
@@ -33,7 +33,7 @@ define(['api','backbone','utils'],
           window.localStorage.setItem(key, value);
         }, this);
       } else {
-        console.warn("ConfigModel.sync called with unexpected method: " + method);
+        console.warn("Settings.sync called with unexpected method: " + method);
       }
 
     }, //sync
@@ -53,10 +53,10 @@ define(['api','backbone','utils'],
         return "Cannot be greater than 200";
       }
     } //validate
-  }); // SettingsModel
+  }); // Settings
 
   // Settings as a variable to be available for other functions
-  var settings = new SettingsModel();
+  var settings = new Settings();
 
   /************ categories ***********/
  
