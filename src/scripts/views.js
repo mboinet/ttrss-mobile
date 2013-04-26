@@ -406,7 +406,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
   var ArticleRowView = Backbone.View.extend({
 
     render: function(event){
-      var link = "#" + Backbone.history.fragment +
+      var link = "#cat" + utils.getCurrentCatId() +
+        "/feed" + utils.getCurrentFeedId() +
         "/art" + this.model.id;
 
       var dateStr = utils.updateTimeToString(this.model.get("updated"));
