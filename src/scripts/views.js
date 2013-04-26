@@ -714,7 +714,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       this.updateContent();
       if (! this.model.has("content")){
-        this.model.once("update:content",
+        this.model.once("change:content",
                         this.updateContent, this);
         // do the fetch now!
         this.model.fetch();
@@ -797,19 +797,13 @@ define(['jquery', 'models', 'templates','conf','utils'],
     },
 
     // this callback can be called as a method or an event callback
-    updateContent: function(model){
+    updateContent: function(){
 
       // the div for the content
       var $contentDiv = this.$("div:jqmData(role='content') > div.main");
-      if ($contentDiv.length == 0){
-        // no div yet
-        this.$("div:jqmData(role='content')").append("<div class=\"main\"></div>");
-        $contentDiv = this.$("div:jqmData(role='content') > div.main");
-      }
 
       if (this.model.has("content")){
         // this article is ready to be fully displayed
-
         var article = this.model.get("content");
 
         // apply content filters
@@ -837,6 +831,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
         this.model.set({ unread: false });
         this.model.save();
 
+      } else {
+        $contentDiv.html("Content loading...");
       }
     }, // renderContent
 
