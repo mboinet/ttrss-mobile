@@ -188,6 +188,8 @@ define(['api','backbone','utils'],
         _.each(_.keys(this.changed), function(att){
           this.toggle(att);
         }, this);
+
+        model.trigger("sync");
       } else {
         console.log("ArticleModel.sync called on an unsupported method: " + method);
       }
@@ -328,8 +330,7 @@ define(['api','backbone','utils'],
       //remove last comma
       articles = articles.substr(0, articles.length - 1);
 
-      // we send an update event to notify the view
-      this.trigger("update");
+      var collection = this;
 
       // API call to mark as read
       api.ttRssApiCall(
@@ -337,7 +338,10 @@ define(['api','backbone','utils'],
           article_ids: articles,
           mode: 2,
           field: 2 },
-         function(m){ jQuery.noop(); } , true);
+         function(m){ 
+           // notify by a sync that the sync worked
+           collection.trigger('sync');
+         } , true);
     }
 
   }); // ArticlesModel
