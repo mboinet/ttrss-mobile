@@ -1,6 +1,8 @@
 1.0-beta
 ========
 
+On 2013-04-23
+
 * It really should be faster than previous releases. It only refresh the lists when really needed.
 * labels were removed for now
 * code is modular and cleaner
