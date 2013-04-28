@@ -153,7 +153,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // first time, no data yet in the collection
       this.$lv.html(tpl.roListElement({text: "Loading..."}));
-      this.$lv.listview("refresh");
     } // initialize
   });
 
