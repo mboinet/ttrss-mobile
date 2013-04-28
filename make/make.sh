@@ -1,3 +1,3 @@
 
-node r.js -o app.build.js
+nodejs r.js -o app.build.js
 
