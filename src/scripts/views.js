@@ -341,6 +341,17 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
     // called when the data must be refreshed
     refresh: function(){
+
+      // do we have feeds from this category?
+      var catId = utils.getCurrentCatId();
+      if (this.collection.where({cat_id: catId}).length == 0){
+        // no, show loading info
+        lvData = tpl.roListElement({text: "Loading..."});
+
+        this.$lv.html(lvData);
+        this.$lv.listview("refresh");
+      }
+
       // update associated collection
       this.collection.fetch();
 
@@ -361,16 +372,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
                                     this.renderTitle,
                                     this);
         models.categoriesModel.fetch();
-      }
-
-      // do we have feeds from this category?
-      var catId = utils.getCurrentCatId();
-      if (this.collection.where({cat_id: catId}).length == 0){
-        // no, show loading info
-        lvData = tpl.roListElement({text: "Loading..."});
-
-        this.$lv.html(lvData);
-        this.$lv.listview("refresh");
       }
 
       return this;
@@ -581,6 +582,14 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       var feedId = utils.getCurrentFeedId();
 
+      // do we have articles from this feed?
+      if (this.collection.feedId != feedId){
+        // no, show loading info
+        lvData = tpl.roListElement({text: "Loading..."});
+        this.$lv.html(lvData);
+        this.$lv.listview("refresh");
+      }
+
       // update the collection
       this.collection.fetch();
 
@@ -597,14 +606,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
       if (feedModel == undefined){
         models.feedsModel.once("sync", this.updateTitle, this);
         models.feedsModel.fetch();
-      }
-
-      // do we have articles from this feed?
-      if (this.collection.feedId != feedId){
-        // no, show loading info
-        lvData = tpl.roListElement({text: "Loading..."});
-        this.$lv.html(lvData);
-        this.$lv.listview("refresh");
       }
 
       return this;
