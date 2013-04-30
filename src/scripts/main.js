@@ -27,7 +27,6 @@ requirejs.config({
 requirejs(['jquery','backbone','conf','router','api','utils','models'],
   function($, Backbone, conf, router, api, utils, models){
 
-
   /************* utilities ***********/
 
   function registerLoginPageActions(){

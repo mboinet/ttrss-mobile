@@ -33,7 +33,7 @@ define(['api','backbone','utils'],
           window.localStorage.setItem(key, value);
         }, this);
       } else {
-        console.warn("Settings.sync called with unexpected method: " + method);
+        utils.log("Settings.sync called with unexpected method: " + method);
       }
 
     }, //sync
@@ -101,7 +101,7 @@ define(['api','backbone','utils'],
         }, true);
 
       } else {
-        console.log("CategoriesModel.sync method called for an " +
+        utils.log("CategoriesModel.sync method called for an " +
           "unsupported method:" + method);
       }
     }
@@ -144,7 +144,7 @@ define(['api','backbone','utils'],
             collection.trigger('sync');
           }, true);
       } else {
-        console.log("FeedsModel.sync called for an unsupported method: " + method);
+        utils.log("FeedsModel.sync called for an unsupported method: " + method);
       }
     }, // sync
 
@@ -166,7 +166,7 @@ define(['api','backbone','utils'],
           function(m){
 
             if (m.length == 0){
-              console.log("ArticleModel.sync: recived nothing for article " +
+              utils.log("ArticleModel.sync: recived nothing for article " +
                 model.id);
               model.set("title", "Error");
               model.set("content",
@@ -191,7 +191,7 @@ define(['api','backbone','utils'],
 
         model.trigger("sync");
       } else {
-        console.log("ArticleModel.sync called on an unsupported method: " + method);
+        utils.log("ArticleModel.sync called on an unsupported method: " + method);
       }
     },
     toggle: function(what){
@@ -217,7 +217,7 @@ define(['api','backbone','utils'],
             field: field },
             function(m){ jQuery.noop(); } , true);
       } else {
-        console.log("ArticleModel.toggle called with an " +
+        utils.log("ArticleModel.toggle called with an " +
           "unexpected parameter : " + what);
       }
     }, // toggle
@@ -304,7 +304,7 @@ define(['api','backbone','utils'],
             collection.trigger('sync');
           }, true);
       } else {
-        console.log("ArticlesModel.sync called for an unsupported method: " + method);
+        utils.log("ArticlesModel.sync called for an unsupported method: " + method);
       }
     }, // sync()
 

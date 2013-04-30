@@ -1,8 +1,8 @@
 
 // API functions
 
-define(['require','jquery','conf','router','models'],
-       function(require, $, conf, router, models){
+define(['require','jquery','conf','router','models','utils'],
+       function(require, $, conf, router, models, utils){
 
   // AJAX defaults
   $.ajaxSetup({
@@ -29,12 +29,12 @@ define(['require','jquery','conf','router','models'],
                " (" + jqXHR.statusText + ")");
       } else {
         // API errors go to the console
-        console.error('API error: ' + thrownError);
+        utils.log('API error: ' + thrownError);
       }
     } else {
       // other states also go to the console too
-      console.error("API error with state " + state + ": " +
-                    thrownError);
+      utils.log("API error with state " + state + ": " +
+                thrownError);
     }
   }
 

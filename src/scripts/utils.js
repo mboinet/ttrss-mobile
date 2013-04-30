@@ -12,6 +12,12 @@ define(['jquery'],function($){
 
   return {
 
+    // log a message to the console if it exists else discard
+    log: function(m){
+      if (typeof console !== 'undefined'){
+        console.log(m);        
+      }
+    },
 
     // clean up a dom object (article to display)
     cleanArticle: function(content, domain){
