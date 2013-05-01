@@ -59,3 +59,12 @@ div#read div[data-role=content]>div.main pre {
 {
   font-weight: normal;
 }
+
+.ui-li-heading {
+    font-size: 14px;
+    white-space: normal;
+}
+
+.ui-li-desc {
+    font-size: 10px;
+}
