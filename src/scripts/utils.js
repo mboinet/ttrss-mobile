@@ -172,6 +172,10 @@ define(['jquery'],function($){
       var id = f.replace(re, "$1");
 
       return parseInt(id);
+    },
+
+    getWebAppPath: function(){
+      return window.location.protocol + "//" + window.location.host + window.location.pathname;
     }
 
   } //return

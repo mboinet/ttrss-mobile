@@ -9,8 +9,5 @@ define({
   /* URL to access your Tiny Tiny RSS installation */
   apiPath: "/tt-rss/",
 
-  /* URL to access this webapp */
-  webappPath: "/ttrss-mobile/"
-
 });
 
