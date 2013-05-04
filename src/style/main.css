@@ -69,3 +69,9 @@ div#read div[data-role=content]>div.main pre {
   text-align: right;
 }
 
+/* article rows slimer */
+#articles ul.ui-listview a {
+  padding-top: 0em;
+  padding-bottom: 0em;
+}
+
