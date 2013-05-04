@@ -154,7 +154,12 @@ requirejs(['jquery','backbone','conf','router','api','utils','models'],
       router.myRouter.setNextTransOptions({transition: "fade"});
       
       // start Backbone router
-      if (!Backbone.history.start({pushState: false, root: utils.getWebAppPath(), silent: false})){
+      if (! Backbone.history.start({
+              pushState: false,
+              root: window.location.pathname,
+              silent: false
+            })){
+
         alert("Could not start router!");
       }
 
