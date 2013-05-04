@@ -24,7 +24,7 @@ How to install?
 * Download the last version available here: [releases](dist)
 * Unpack the archive somewhere on your server
 * In the scripts dir, copy `conf.js-dist` to `conf.js` and set
-  these variables: `window.apiPath` and `window.webappPath`
+  the variable `window.apiPath`
 
 ###Updates
 * Download the update
