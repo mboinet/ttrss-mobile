@@ -294,6 +294,13 @@ define(['api','backbone','utils'],
 
         api.ttRssApiCall(
           msg, function(res){
+
+            if (collection.feedId != feedId){
+              /* this is another feed, force a clean
+                to trigger delete/add events */
+              collection.set({});
+            }
+
             // efficiently set the collection
             collection.set(res);
           
