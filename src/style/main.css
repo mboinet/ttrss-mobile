@@ -60,11 +60,12 @@ div#read div[data-role=content]>div.main pre {
   font-weight: normal;
 }
 
-.ui-li-heading {
-    font-size: 14px;
-    white-space: normal;
+#articles .ui-li-heading {
+  white-space: normal;
+  font-size: 0.97em;
 }
 
-.ui-li-desc {
-    font-size: 10px;
+#articles .ui-li-desc {
+  text-align: right;
 }
+
