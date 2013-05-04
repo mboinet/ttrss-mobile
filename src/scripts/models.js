@@ -112,7 +112,20 @@ define(['api','backbone','utils'],
 
 
   // default model to store a feed
-  var FeedModel = Backbone.Model.extend();
+  var FeedModel = Backbone.Model.extend({
+    sync: function(method, model){
+      if (method == "create"){
+        api.ttRssApiCall({
+          "op": "subscribeToFeed",
+          "feed_url": model.get("feedUrl")
+        }, function(m){
+          // TODO: Catch errors.
+        }, true);
+      } else {
+        utils.log("FeedModel.sync called for an unsupported method: " + method);
+      }
+    }
+  });
 
 
   // model for a collection of feeds from a category
@@ -370,6 +383,7 @@ define(['api','backbone','utils'],
   return {
     
     categoriesModel: new CategoriesModel(),
+    feed: FeedModel,
     feedsModel: feedsModel,
     articlesModel: articlesModel,
     configModel: new ConfigModel(),

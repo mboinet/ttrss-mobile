@@ -45,6 +45,7 @@
     <div id="catPopupMenu" data-role="popup"
       data-transition="pop" data-tolerance="34,5,0,0">
       <ul data-role="listview" data-inset="true" data-theme="b">
+        <li data-icon="plus"><a href="#subscribe" class="subscribeButton">Subscribe</a></li>       
         <li data-icon="refresh"><a href="#" class="refreshButton">Refresh</a></li>     
         <li data-icon="delete"><a href="#" class="logoutButton">Logout</a></li>       
       </ul>
@@ -170,6 +171,26 @@
     </div>
     <div class="version">
       <p>Version : 1.0-beta2</p>
+    </div>
+  </div>
+
+
+  <div data-role="page" id="subscribe" data-add-back-btn="true" data-title="Subscribe">
+    <div data-role="header">
+      <a href="#" data-role="button"
+        data-icon="back"
+        data-mini="true" class="ui-btn-left backButton">Back</a>
+      <h1>Subscribe</h1>
+    </div>
+    <div data-role="content">
+      <form action="#" method="POST" data-ajax="false">
+        <div data-role="fieldcontain">
+          <label for="feedUrl">URL:</label>
+          <input type="text" name="feedUrl" id="feedUrl" value=""
+            autocapitalize="none" autocorrect="off" />
+        </div>
+        <button type="submit" data-theme="b">Subscribe</button>
+      </form>
     </div>
   </div>
 
