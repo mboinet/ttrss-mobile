@@ -70,7 +70,7 @@ div#read div[data-role=content]>div.main pre {
 }
 
 /* article rows slimer */
-#articles ul.ui-listview a {
+#articles div.ui-content a {
   padding-top: 0em;
   padding-bottom: 0em;
 }
