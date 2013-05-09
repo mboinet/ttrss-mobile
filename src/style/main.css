@@ -75,3 +75,7 @@ div#read div[data-role=content]>div.main pre {
   padding-bottom: 0em;
 }
 
+/* to hide categories without unread articles */
+.hidden {
+  display: none;
+}

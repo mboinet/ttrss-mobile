@@ -17,7 +17,12 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        this.el.classList.add('read');
+        if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
+          this.el.classList.add('hidden');
+        }
+        else {
+          this.el.classList.add('read');
+        } 
       }
 
       return this;
@@ -29,9 +34,15 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        this.el.classList.add('read');
+        if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
+          this.el.classList.add('hidden');
+        }
+        else {
+          this.el.classList.add('read');
+        } 
       } else {
         this.el.classList.remove('read');
+        this.el.classList.remove('hidden');
       }
     },
 
@@ -228,7 +239,12 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        this.el.classList.add('read');
+        if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
+          this.el.classList.add('hidden');
+        }
+        else {
+          this.el.classList.add('read');
+        } 
       }
 
       this.el.innerHTML = html;
@@ -242,9 +258,15 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        this.el.classList.add('read');
+        if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
+          this.el.classList.add('hidden');
+        }
+        else {
+          this.el.classList.add('read');
+        } 
       } else {
         this.el.classList.remove('read');
+        this.el.classList.remove('hidden');
       }
     },
 
@@ -464,14 +486,24 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       this.el.innerHTML = html;
       if (! unread){
-        this.el.classList.add("read");
+        if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
+          this.el.classList.add('hidden');
+        }
+        else {
+          this.el.classList.add('read');
+        } 
       }
 
       return this;
     }, // render
 
     updateUnread: function(){
-      this.el.classList.toggle("read");
+      if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
+        this.el.classList.add('hidden');
+      }
+      else {
+        this.el.classList.add('read');
+      } 
     },
 
     initialize: function() {
@@ -1019,8 +1051,10 @@ define(['jquery', 'models', 'templates','conf','utils'],
     render: function(){
       var artNumber = this.model.get("articlesNumber");
       var artOldestFirst = this.model.get("articlesOldestFirst");
+      var hideEmptyCategories = this.model.get("hideEmptyCategories");
       this.$("#articles-number").attr("value", artNumber);
       this.$("#articles-oldest-first").prop("checked", artOldestFirst).checkboxradio("refresh");
+      this.$("#hide-empty-categories").prop("checked", hideEmptyCategories).checkboxradio("refresh");
       return this;
     },
 
@@ -1030,7 +1064,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
       event.data.model.set(
         {
           articlesNumber: $("#articles-number").val(),
-          articlesOldestFirst: $("#articles-oldest-first").prop("checked")
+          articlesOldestFirst: $("#articles-oldest-first").prop("checked"),
+          hideEmptyCategories: $("#hide-empty-categories").prop("checked")
         },
         {validate: true}
       );
