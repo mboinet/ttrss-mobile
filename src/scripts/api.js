@@ -68,8 +68,8 @@ define(['require','jquery','conf','router','models','utils'],
           
           } else {
             // SINGLE_USER_MODE
-            models.settingsModel.set("sid", data.content.session_id);
-            models.settingsModel.save();
+            require('models').settingsModel.set("sid", data.content.session_id);
+            require('models').settingsModel.save();
 
             window.location.reload(true);
           }
