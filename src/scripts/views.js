@@ -772,7 +772,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
                     this.renderPublishToggleButton);
 
       return this;
-    },
+    }, //refresh
 
     // callback to update the href of the back button
     updateBackButton: function(){
@@ -968,8 +968,18 @@ define(['jquery', 'models', 'templates','conf','utils'],
       // we now have the HTML ready, add it to the content
       if (hasPrev || hasNext){
         // only if we need thoses links
-        this.$("div:jqmData(role='content') > div.main")
-          .append(html).trigger('create');
+
+        // do we already have the links?
+        var $links =
+          this.$("div:jqmData(role='content') > div.main > div.ui-grid-a");
+
+        if ($links.length == 1){
+          $links.replaceWith(html);
+          this.$("div:jqmData(role='content') > div.main").trigger('create');
+        } else {
+          this.$("div:jqmData(role='content') > div.main")
+            .append(html).trigger('create');
+        }
       }
 
     },
