@@ -17,14 +17,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
-          this.el.classList.add('hidden');
-        }
-        else {
-          this.el.classList.add('read');
-        } 
+        this.el.classList.add('read');
       }
-
       return this;
     },
 
@@ -34,15 +28,9 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
-          this.el.classList.add('hidden');
-        }
-        else {
-          this.el.classList.add('read');
-        } 
+        this.el.classList.add('read');
       } else {
         this.el.classList.remove('read');
-        this.el.classList.remove('hidden');
       }
     },
 
@@ -84,16 +72,16 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // li element to add
       var li = row.render().el;
-
+  
       // add an id to the li element
       li.id = 'cat' + catId;
-
+  
       if (catId < 0){
         // Special category comes at the top with a separator
         this.$lv.prepend(tpl.listSeparator({ text: '&nbsp;' }));
-
+  
         //TODO Labels category can be added here
-
+  
         this.$lv.prepend(li);
       } else {
         // Other categories comes at the bottom, we order them
@@ -101,7 +89,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
         
         // current position in the collection
         var pos = this.collection.indexOf(row.model);
-
+  
         if (pos == this.collection.length - 1){
           // the last one in the collection
           this.$lv.append(li);
@@ -117,7 +105,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
           }
         }
       }
-
     }, //addCat
 
     // called when the data must be refreshed
@@ -239,12 +226,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
-          this.el.classList.add('hidden');
-        }
-        else {
-          this.el.classList.add('read');
-        } 
+        this.el.classList.add('read');
       }
 
       this.el.innerHTML = html;
@@ -258,15 +240,9 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
-          this.el.classList.add('hidden');
-        }
-        else {
-          this.el.classList.add('read');
-        } 
+        this.el.classList.add('read');
       } else {
         this.el.classList.remove('read');
-        this.el.classList.remove('hidden');
       }
     },
 
@@ -333,17 +309,18 @@ define(['jquery', 'models', 'templates','conf','utils'],
         this.$lv.empty();
       }
 
-      var row = new FeedRowView({model: model});
 
+      var row = new FeedRowView({model: model});
+  
       // li element to add
       var li = row.render().el;
-
+  
       // add an id to the li element to find it back easily later
       li.id = 'feed' + model.id;
-
+  
       // append it to the list at the good position
       var pos = this.collection.indexOf(row.model);
-
+  
       if (pos == this.collection.length - 1){
         // the last one in the collection
         this.$lv.append(li);
@@ -358,7 +335,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
           this.$lv.append(li);
         }
       }
-
     }, //addFeed
 
     // called when the data must be refreshed
@@ -486,24 +462,14 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       this.el.innerHTML = html;
       if (! unread){
-        if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
-          this.el.classList.add('hidden');
-        }
-        else {
-          this.el.classList.add('read');
-        } 
+        this.el.classList.add('read');
       }
 
       return this;
     }, // render
 
     updateUnread: function(){
-      if (models.settingsModel.attributes.hideEmptyCategories == 'true'){
-        this.el.classList.add('hidden');
-      }
-      else {
-        this.el.classList.add('read');
-      } 
+      this.el.classList.toggle("read");
     },
 
     initialize: function() {
