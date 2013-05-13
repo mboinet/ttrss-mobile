@@ -234,12 +234,12 @@ define(['api','backbone','utils'],
           (prevVal != newVal)){
 
         // try to update the parent models of the unread count
-        var count = (newVal ? 1 : -1);      
+        var count = new Number((newVal ? 1 : -1));
 
         // update feed count
         var feedModel = feedsModel.get(utils.getCurrentFeedId());
         if (feedModel){
-          var unread = feedModel.get("unread");
+          var unread = new Number(feedModel.get("unread"));
           feedModel.set({unread: unread + count});
         }
       }
