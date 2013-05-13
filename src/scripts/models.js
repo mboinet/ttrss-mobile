@@ -134,7 +134,7 @@ define(['api','backbone','utils'],
           op:             "getFeeds",
           cat_id:         catId,
           include_nested: false,
-          unread_only: settings.attributes.hideEmptyCategories=="true"     // get only feeds with unread articles
+          unread_only: settings.attributes.hideEmptyCategories     // get only feeds with unread articles
         };
 
         api.ttRssApiCall(
@@ -301,7 +301,7 @@ define(['api','backbone','utils'],
             if (collection.feedId != feedId){
               /* this is another feed, force a clean
                 to trigger delete/add events */
-              collection.set({});
+                collection.set([]); // works on HP touchpad but collection.set({}) stopped the execution of code right here
             }
 
             // efficiently set the collection
