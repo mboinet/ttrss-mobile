@@ -1,3 +1,14 @@
+1.0
+===
+
+On 2013-05-14
+
+* bug fixes
+* articles rows in the list are thinner
+* articles titles in the list wrap to the next line when too long
+* doc updates
+* removal of the webappPath config entry
+
 1.0-beta
 ========
 
