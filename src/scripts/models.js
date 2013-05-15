@@ -40,7 +40,8 @@ define(['api','backbone','utils'],
 
     defaults: {
       articlesNumber: 10,
-      articlesOldestFirst: false
+      articlesOldestFirst: false,
+      articlesShowExcerpt: false
     },
 
     validate: function(attrs, options){
@@ -276,7 +277,7 @@ define(['api','backbone','utils'],
         // we need to fetch the articles list for this feed
         var msg = {
           op:             "getHeadlines",
-          show_excerpt:   false,
+          show_excerpt:   settings.get("articlesShowExcerpt"),
           view_mode:      "adaptive",
           show_content:   true,
           limit:          settings.get("articlesNumber"),
