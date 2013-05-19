@@ -242,7 +242,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       if (this.model.get('unread') == 0){
         this.el.classList.add('read');
       } else {
-        this.el.classList.remove('read');
+        // this.el.classList.remove('read');  // BUG HERE on HP Touchpad
       }
     },
 
@@ -469,7 +469,13 @@ define(['jquery', 'models', 'templates','conf','utils'],
     }, // render
 
     updateUnread: function(){
-      this.el.classList.toggle("read");
+      // make articles with 0 unread not bold
+      //this.el.classList.toggle('read');  // BUG on HP touchpad !
+      if (this.model.get('unread') == 0){
+        this.model.set('unread', false);
+      } else {
+        this.model.set('unread', true);
+      }
     },
 
     initialize: function() {
@@ -700,7 +706,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
           this.model = new models.article({id: artId});
         }
       }
-      
+
       // update the view parts
       this.updateBackButton();
 
@@ -756,7 +762,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       } else {
         this.renderPrevNext();
       }
-      
+
       this.renderUnreadToggleButton();
       this.listenTo(this.model, "change:unread",
                     this.renderUnreadToggleButton);

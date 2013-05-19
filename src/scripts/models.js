@@ -169,7 +169,7 @@ define(['api','backbone','utils'],
           function(m){
 
             if (m.length == 0){
-              utils.log("ArticleModel.sync: recived nothing for article " +
+              utils.log("ArticleModel.sync: received nothing for article " +
                 model.id);
               model.set("title", "Error");
               model.set("content",
