@@ -19,7 +19,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
       if (this.model.get('unread') == 0){
         this.el.classList.add('read');
       }
-
       return this;
     },
 
@@ -73,16 +72,16 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // li element to add
       var li = row.render().el;
-
+  
       // add an id to the li element
       li.id = 'cat' + catId;
-
+  
       if (catId < 0){
         // Special category comes at the top with a separator
         this.$lv.prepend(tpl.listSeparator({ text: '&nbsp;' }));
-
+  
         //TODO Labels category can be added here
-
+  
         this.$lv.prepend(li);
       } else {
         // Other categories comes at the bottom, we order them
@@ -90,7 +89,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
         
         // current position in the collection
         var pos = this.collection.indexOf(row.model);
-
+  
         if (pos == this.collection.length - 1){
           // the last one in the collection
           this.$lv.append(li);
@@ -106,7 +105,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
           }
         }
       }
-
     }, //addCat
 
     // called when the data must be refreshed
@@ -244,7 +242,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       if (this.model.get('unread') == 0){
         this.el.classList.add('read');
       } else {
-        this.el.classList.remove('read');
+        // this.el.classList.remove('read');  // BUG HERE on HP Touchpad
       }
     },
 
@@ -311,17 +309,18 @@ define(['jquery', 'models', 'templates','conf','utils'],
         this.$lv.empty();
       }
 
-      var row = new FeedRowView({model: model});
 
+      var row = new FeedRowView({model: model});
+  
       // li element to add
       var li = row.render().el;
-
+  
       // add an id to the li element to find it back easily later
       li.id = 'feed' + model.id;
-
+  
       // append it to the list at the good position
       var pos = this.collection.indexOf(row.model);
-
+  
       if (pos == this.collection.length - 1){
         // the last one in the collection
         this.$lv.append(li);
@@ -336,7 +335,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
           this.$lv.append(li);
         }
       }
-
     }, //addFeed
 
     // called when the data must be refreshed
@@ -464,14 +462,20 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       this.el.innerHTML = html;
       if (! unread){
-        this.el.classList.add("read");
+        this.el.classList.add('read');
       }
 
       return this;
     }, // render
 
     updateUnread: function(){
-      this.el.classList.toggle("read");
+      // make articles with 0 unread not bold
+      //this.el.classList.toggle('read');  // BUG on HP touchpad !
+      if (this.model.get('unread') == 0){
+        this.model.set('unread', false);
+      } else {
+        this.model.set('unread', true);
+      }
     },
 
     initialize: function() {
@@ -702,7 +706,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
           this.model = new models.article({id: artId});
         }
       }
-      
+
       // update the view parts
       this.updateBackButton();
 
@@ -758,7 +762,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
       } else {
         this.renderPrevNext();
       }
-      
+
       this.renderUnreadToggleButton();
       this.listenTo(this.model, "change:unread",
                     this.renderUnreadToggleButton);
@@ -1029,8 +1033,10 @@ define(['jquery', 'models', 'templates','conf','utils'],
     render: function(){
       var artNumber = this.model.get("articlesNumber");
       var artOldestFirst = this.model.get("articlesOldestFirst");
+      var hideEmptyCategories = this.model.get("hideEmptyCategories");
       this.$("#articles-number").attr("value", artNumber);
       this.$("#articles-oldest-first").prop("checked", artOldestFirst).checkboxradio("refresh");
+      this.$("#hide-empty-categories").prop("checked", hideEmptyCategories).checkboxradio("refresh");
       return this;
     },
 
@@ -1040,7 +1046,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
       event.data.model.set(
         {
           articlesNumber: $("#articles-number").val(),
-          articlesOldestFirst: $("#articles-oldest-first").prop("checked")
+          articlesOldestFirst: $("#articles-oldest-first").prop("checked"),
+          hideEmptyCategories: $("#hide-empty-categories").prop("checked")
         },
         {validate: true}
       );
