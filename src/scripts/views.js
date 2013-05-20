@@ -65,8 +65,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       this.LVrefreshNeeded = true;
 
-      // if nothing yet, cleanup listview
-      if (this.$('li.ui-li-static').html() == "Loading..."){
+      // if nothing yet (only a static message), cleanup listview
+      if (this.$('li.ui-li-static').length != 0){
         this.$lv.empty();
       }
 
@@ -119,6 +119,20 @@ define(['jquery', 'models', 'templates','conf','utils'],
     // this is called each time the collection is
     // synced
     onSync: function(){
+      // in case there are no feeds after a refresh
+      if (this.collection.length == 0){
+
+        var msg = "No categories";
+
+        if (models.settingsModel.get("hideEmptyCategories")){
+          msg = "No unread categories";
+        }
+        
+        // add the list element
+        this.$lv.html(tpl.roListElement({text: msg}));
+        this.LVrefreshNeeded = true;
+      }
+
       if (this.LVrefreshNeeded){
         this.$lv.listview("refresh");
         this.LVrefreshNeeded = false;
