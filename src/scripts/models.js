@@ -87,7 +87,9 @@ define(['api','backbone','utils'],
         // only action for a category: read
         var request = {
           op:             "getCategories",
-          enable_nested:  "false"
+          enable_nested:  "false",
+          include_empty:  (settings.attributes.hideEmptyCategories=="false"),    // do not get empty categories
+          unread_only:    settings.attributes.hideEmptyCategories                // get only feeds with unread articles
           // we want nested ones but they will not be
           // nested yet
         };
@@ -131,7 +133,8 @@ define(['api','backbone','utils'],
         var request = {
           op:             "getFeeds",
           cat_id:         catId,
-          include_nested: false
+          include_nested: false,
+          unread_only: settings.attributes.hideEmptyCategories     // get only feeds with unread articles
         };
 
         api.ttRssApiCall(
@@ -166,7 +169,7 @@ define(['api','backbone','utils'],
           function(m){
 
             if (m.length == 0){
-              utils.log("ArticleModel.sync: recived nothing for article " +
+              utils.log("ArticleModel.sync: received nothing for article " +
                 model.id);
               model.set("title", "Error");
               model.set("content",
@@ -298,7 +301,7 @@ define(['api','backbone','utils'],
             if (collection.feedId != feedId){
               /* this is another feed, force a clean
                 to trigger delete/add events */
-              collection.set({});
+                collection.set([]); // works on HP touchpad but collection.set({}) stopped the execution of code right here
             }
 
             // efficiently set the collection
