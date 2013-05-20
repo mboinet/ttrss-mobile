@@ -11,13 +11,13 @@ define(['api','backbone','utils'],
         for (var i = 0; i < window.localStorage.length; i++){
           var key = window.localStorage.key(i);
           var val = window.localStorage.getItem(key);
-          if (val != null){
-            if (key === "articlesOldestFirst"){
-              // Convert value back from string to boolean.
-              val = val == "true";
-            }
-            model.set(key, val);
+
+          // convert booleans values from string
+          if (val == "true" || val == "false"){
+            val = (val == "true");
           }
+
+          model.set(key, val);
         }
       } else if (method == "update"){
         /* write to localStorage every changed attributes */
