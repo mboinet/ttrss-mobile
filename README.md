@@ -79,4 +79,4 @@ Current features
 * settings page: only number of articles to load as of now
 
 Other features to come are tracked as issues.
-Don't hesitate to give a hand or request things :-)
+Feel free to give a hand or request things :-)
