@@ -300,7 +300,7 @@ define(['api','backbone','utils'],
             if (collection.feedId != feedId){
               /* this is another feed, force a clean
                 to trigger delete/add events */
-                collection.set([]); // works on HP touchpad but collection.set({}) stopped the execution of code right here
+              collection.set([]);
             }
 
             // efficiently set the collection
