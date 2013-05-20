@@ -89,8 +89,7 @@ define(['api','backbone','utils'],
         var request = {
           op:             "getCategories",
           enable_nested:  "false", // we want nested ones but they will not be nested yet
-          include_empty:  (settings.attributes.hideEmptyCategories=="false"),    // do not get empty categories
-          unread_only:    settings.attributes.hideEmptyCategories                // get only feeds with unread articles
+          unread_only:    settings.attributes.hideEmptyCategories // get only feeds with unread articles
         };
 
         api.ttRssApiCall(request, function(res){
