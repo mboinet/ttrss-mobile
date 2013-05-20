@@ -17,7 +17,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        this.el.classList.add('read');
+        this.$el.addClass('read');
       }
       return this;
     },
@@ -28,9 +28,9 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        this.el.classList.add('read');
+        this.$el.addClass('read');
       } else {
-        this.el.classList.remove('read');
+        this.$el.removeClass('read');
       }
     },
 
@@ -178,11 +178,11 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       var img = document.createElement('img');
       img.src = iconSrc;
-      img.classList.add("ui-li-icon");
-      img.classList.add("ui-li-thumb");
+      $(img).addClass("ui-li-icon");
+      $(img).addClass("ui-li-thumb");
 
       // tell the li element to make space for the icon
-      this.el.classList.add("ui-li-has-icon");
+      this.$el.addClass("ui-li-has-icon");
 
       // add the image to the element
       this.$('a').prepend(img);
@@ -226,7 +226,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        this.el.classList.add('read');
+        this.$el.addClass('read');
       }
 
       this.el.innerHTML = html;
@@ -240,9 +240,9 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // make articles with 0 unread not bold
       if (this.model.get('unread') == 0){
-        this.el.classList.add('read');
+        this.$el.addClass('read');
       } else {
-        // this.el.classList.remove('read');  // BUG HERE on HP Touchpad
+        this.$el.removeClass('read');
       }
     },
 
@@ -477,7 +477,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       this.el.innerHTML = html;
       if (! unread){
-        this.el.classList.add('read');
+        this.$el.addClass('read');
       }
 
       return this;
@@ -485,7 +485,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
     updateUnread: function(){
       // make articles with 0 unread not bold
-      //this.el.classList.toggle('read');  // BUG on HP touchpad !
+      this.$el.toggleClass('read');  // BUG on HP touchpad !
       if (this.model.get('unread') == 0){
         this.model.set('unread', false);
       } else {
