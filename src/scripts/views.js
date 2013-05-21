@@ -450,7 +450,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
         html = tpl.articleLiElement({
           href:  link,
           date:  dateStr,
-          title: this.model.get('title') });
+          title: this.model.get('title'),
+          excerpt: this.model.get('excerpt') });
 
       } else {
         // special cat, we show the feed name
@@ -1029,8 +1030,10 @@ define(['jquery', 'models', 'templates','conf','utils'],
     render: function(){
       var artNumber = this.model.get("articlesNumber");
       var artOldestFirst = this.model.get("articlesOldestFirst");
+      var artShowExcerpt = this.model.get("articlesShowExcerpt");
       this.$("#articles-number").attr("value", artNumber);
       this.$("#articles-oldest-first").prop("checked", artOldestFirst).checkboxradio("refresh");
+      this.$("#articles-show-excerpt").prop("checked", artShowExcerpt).checkboxradio("refresh");
       return this;
     },
 
@@ -1040,7 +1043,8 @@ define(['jquery', 'models', 'templates','conf','utils'],
       event.data.model.set(
         {
           articlesNumber: $("#articles-number").val(),
-          articlesOldestFirst: $("#articles-oldest-first").prop("checked")
+          articlesOldestFirst: $("#articles-oldest-first").prop("checked"),
+          articlesShowExcerpt: $("#articles-show-excerpt").prop("checked")
         },
         {validate: true}
       );

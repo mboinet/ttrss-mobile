@@ -32,6 +32,7 @@ define(['underscore'], function(_){
     articleLiElement : 
       _.template('<a href="<%= href %>">' +
       '<h3><%= title %></h3>' +
+      '<% if (( typeof excerpt !== 'undefined' ) && ( excerpt != "" )) { %><p style="white-space:normal;"><%= excerpt %></p><% } %>' +
       '<p class="ui-li-desc"><%= date %></p></a>'),
 
     // the content of a LI element for an article with the feed Name
@@ -39,6 +40,7 @@ define(['underscore'], function(_){
       _.template(
         '<a href="<%= href %>">' +
         '<h3><%= title %></h3>' +
+        '<% if (( typeof excerpt !== 'undefined' ) && ( excerpt != "" )) { %><p style="white-space:normal;"><%= excerpt %></p><% } %>' +
         '<p class="ul-li-desc"><strong><%= feed %></strong></p>' +
         '<p class="ui-li-desc"><%= date %></p></a>'
       ),
