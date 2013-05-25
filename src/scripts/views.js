@@ -131,7 +131,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
         var msg = "No categories";
 
         if (models.settings.get("onlyUnread")){
-          msg = "No unread categories";
+          msg = "Good job, you read it all :-)";
         }
         
         // add the list element
