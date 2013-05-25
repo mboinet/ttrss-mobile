@@ -353,7 +353,26 @@ define(['api','backbone','utils'],
            // notify by a sync that the sync worked
            collection.trigger('sync');
          } , true);
-    }
+    },
+
+
+    onUnreadChange: function(model){
+
+      if (settings.get("onlyUnread") &&
+           ! model.get("unread")) {
+        // A model was marked as read in onlyUnread mode
+
+        this.remove(model);
+      }
+
+    }, //onUnreadUpdate
+
+    initialize: function(){
+
+      // listen for unread changes
+      this.on("change:unread", this.onUnreadChange, this);
+
+    } //initialize
 
   }); // ArticlesModel
 

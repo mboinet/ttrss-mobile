@@ -662,15 +662,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
       this.renderMarkAllButton();
     },
 
-    onUnreadChange: function(art){
-
-      if (models.settingsModel.get("onlyUnread")){
-        // we can remove the element
-        this.delArt(art);
-      }
-
-    },
-
     initialize: function(){
 
       this.collection.on("add", this.addArt, this);
@@ -705,9 +696,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       // after an update of the collection
       this.collection.on("sync", this.onSync, this);
-
-      // listen for unread change on an element
-      this.collection.on("change:unread", this.onUnreadChange, this);
 
       // listview div
       this.$lv = this.$('div[data-role="content"] ' +
