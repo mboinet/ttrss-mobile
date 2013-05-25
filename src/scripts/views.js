@@ -124,7 +124,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
         var msg = "No categories";
 
-        if (models.settingsModel.get("hideEmptyCategories")){
+        if (models.settingsModel.get("onlyUnread")){
           msg = "No unread categories";
         }
         
@@ -397,7 +397,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
         var msg = "No feeds";
 
-        if (models.settingsModel.get("hideEmptyCategories")){
+        if (models.settingsModel.get("onlyUnread")){
           msg = "No unread feeds";
         }
         
@@ -656,7 +656,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
         // no elements in the collection
 
         // message depending on options
-        var msg = models.settingsModel.get("hideEmptyCategories") ?
+        var msg = models.settingsModel.get("onlyUnread") ?
           "No unread articles" :"No articles" ;
 
         this.$lv.html(tpl.roListElement({text: msg}));
@@ -1067,10 +1067,10 @@ define(['jquery', 'models', 'templates','conf','utils'],
     render: function(){
       var artNumber = this.model.get("articlesNumber");
       var artOldestFirst = this.model.get("articlesOldestFirst");
-      var hideEmptyCategories = this.model.get("hideEmptyCategories");
+      var onlyUnread = this.model.get("onlyUnread");
       this.$("#articles-number").attr("value", artNumber);
       this.$("#articles-oldest-first").prop("checked", artOldestFirst).checkboxradio("refresh");
-      this.$("#hide-empty-categories").prop("checked", hideEmptyCategories).checkboxradio("refresh");
+      this.$("#only-unread").prop("checked", onlyUnread).checkboxradio("refresh");
       return this;
     },
 
@@ -1081,7 +1081,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
         {
           articlesNumber: $("#articles-number").val(),
           articlesOldestFirst: $("#articles-oldest-first").prop("checked"),
-          hideEmptyCategories: $("#hide-empty-categories").prop("checked")
+          onlyUnread: $("#only-unread").prop("checked")
         },
         {validate: true}
       );

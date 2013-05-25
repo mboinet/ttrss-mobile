@@ -41,7 +41,7 @@ define(['api','backbone','utils'],
     defaults: {
       articlesNumber: 10,
       articlesOldestFirst: false,
-      hideEmptyCategories: false
+      onlyUnread: false
     },
 
     validate: function(attrs, options){
@@ -89,7 +89,7 @@ define(['api','backbone','utils'],
         var request = {
           op:             "getCategories",
           enable_nested:  "false", // we want nested ones but they will not be nested yet
-          unread_only:    settings.attributes.hideEmptyCategories // get only feeds with unread articles
+          unread_only:    settings.attributes.onlyUnread // get only feeds with unread articles
         };
 
         api.ttRssApiCall(request, function(res){
@@ -132,7 +132,7 @@ define(['api','backbone','utils'],
           op:             "getFeeds",
           cat_id:         catId,
           include_nested: false,
-          unread_only: settings.attributes.hideEmptyCategories     // get only feeds with unread articles
+          unread_only: settings.attributes.onlyUnread     // get only feeds with unread articles
         };
 
         api.ttRssApiCall(
@@ -275,7 +275,7 @@ define(['api','backbone','utils'],
         var orderBy = settings.get("articlesOldestFirst") === true ? "date_reverse" : "feed_dates";
 
         // set view_mode depending on options
-        var viewMode = settings.get("hideEmptyCategories") ? "unread" : "adaptive";
+        var viewMode = settings.get("onlyUnread") ? "unread" : "adaptive";
 
         // we need to fetch the articles list for this feed
         var msg = {
