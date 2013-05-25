@@ -654,7 +654,12 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
       if (this.collection.length == 0){
         // no elements in the collection
-        this.$lv.html(tpl.roListElement({text: "No articles"}));
+
+        // message depending on options
+        var msg = models.settingsModel.get("hideEmptyCategories") ?
+          "No unread articles" :"No articles" ;
+
+        this.$lv.html(tpl.roListElement({text: msg}));
         this.$lv.listview("refresh");
       }
 
