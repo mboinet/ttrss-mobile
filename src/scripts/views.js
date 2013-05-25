@@ -124,7 +124,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
         var msg = "No categories";
 
-        if (models.settingsModel.get("onlyUnread")){
+        if (models.settings.get("onlyUnread")){
           msg = "No unread categories";
         }
         
@@ -397,7 +397,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
         var msg = "No feeds";
 
-        if (models.settingsModel.get("onlyUnread")){
+        if (models.settings.get("onlyUnread")){
           msg = "No unread feeds";
         }
         
@@ -651,7 +651,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
         // no elements in the collection
 
         // message depending on options
-        var msg = models.settingsModel.get("onlyUnread") ?
+        var msg = models.settings.get("onlyUnread") ?
           "No unread articles" :"No articles" ;
 
         this.$lv.html(tpl.roListElement({text: msg}));
@@ -1095,7 +1095,7 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
     initialize: function(){
       // bind the view to the model
-      this.model = models.settingsModel;
+      this.model = models.settings;
     
       // load settings from localStorage & update values
       this.model.fetch();

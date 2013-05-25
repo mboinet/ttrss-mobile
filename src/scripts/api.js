@@ -68,8 +68,8 @@ define(['require','jquery','conf','router','models','utils'],
           
           } else {
             // SINGLE_USER_MODE
-            require('models').settingsModel.set("sid", data.content.session_id);
-            require('models').settingsModel.save();
+            require('models').settings.set("sid", data.content.session_id);
+            require('models').settings.save();
 
             window.location.reload(true);
           }
@@ -91,7 +91,7 @@ define(['require','jquery','conf','router','models','utils'],
     ttRssApiCall: function(req, success, async){
       var data = req;
       // circular dependency for models
-      var sid = require('models').settingsModel.get("sid");
+      var sid = require('models').settings.get("sid");
 
       if (sid != undefined){
         data.sid = sid;

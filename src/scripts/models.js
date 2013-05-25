@@ -403,7 +403,7 @@ define(['api','backbone','utils'],
     feedsModel: feedsModel,
     articlesModel: articlesModel,
     configModel: new ConfigModel(),
-    settingsModel: settings,
+    settings: settings,
     article: ArticleModel
 
   }

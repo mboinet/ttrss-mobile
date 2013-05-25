@@ -58,8 +58,8 @@ requirejs(['jquery','backbone','conf','router','api','utils','models'],
       .done(function(data){
         if (data.status == 0){
           // we store the sessions id
-          models.settingsModel.set("sid", data.content.session_id);
-          models.settingsModel.save();
+          models.settings.set("sid", data.content.session_id);
+          models.settings.save();
 
           router.myRouter.setNextTransOptions({reverse: true, transition: "slideup"});
 
