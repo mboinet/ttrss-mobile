@@ -53,6 +53,12 @@ define(['jquery', 'models', 'templates','conf','utils'],
     // category removed
     delCat : function(model){
       this.$('#cat' + model.id).remove();
+
+      if (model.id < 0){
+        // this was a special category, also remove the separator
+        this.$('li.ui-li-divider').remove();
+      }
+
       this.LVrefreshNeeded = true;
     }, //delCat
 
