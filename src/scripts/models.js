@@ -274,11 +274,14 @@ define(['api','backbone','utils'],
 
         var orderBy = settings.get("articlesOldestFirst") === true ? "date_reverse" : "feed_dates";
 
+        // set view_mode depending on options
+        var viewMode = settings.get("hideEmptyCategories") ? "unread" : "adaptive";
+
         // we need to fetch the articles list for this feed
         var msg = {
           op:             "getHeadlines",
           show_excerpt:   false,
-          view_mode:      "adaptive",
+          view_mode:      viewMode,
           show_content:   true,
           limit:          settings.get("articlesNumber"),
           order_by:       orderBy
