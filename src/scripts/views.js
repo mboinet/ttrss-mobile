@@ -890,11 +890,6 @@ define(['jquery', 'models', 'templates','conf','utils'],
 
         $contentDiv.trigger('create');
 
-        // mark as read and save it to the backend
-        if (this.model.get("unread")){
-          this.model.save({ unread: false});
-        }
-
       } else {
         $contentDiv.html("Content loading...");
       }
@@ -1013,6 +1008,11 @@ define(['jquery', 'models', 'templates','conf','utils'],
           this.$("div:jqmData(role='content') > div.main")
             .append(html).trigger('create');
         }
+      }
+
+      // mark as read and save it to the backend
+      if (this.model.get("unread")){
+        this.model.save({unread: false});
       }
 
     },
