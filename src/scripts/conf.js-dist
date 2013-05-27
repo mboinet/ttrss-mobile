@@ -7,7 +7,7 @@
 define({
 
   /* URL to access your Tiny Tiny RSS installation */
-  apiPath: "/tt-rss/",
+  apiPath: "/tt-rss/"
 
 });
 
