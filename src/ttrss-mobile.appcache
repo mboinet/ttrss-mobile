@@ -1,0 +1,18 @@
+CACHE MANIFEST
+# version <REPLACE_ME>
+
+CACHE:
+index.html
+style/main.css
+style/images/ajax-loader.gif
+style/images/icons-18-black.png
+style/images/icons-18-white.png
+style/images/icons-36-black.png
+style/images/icons-36-white.png
+scripts/conf.js
+scripts/main.js
+scripts/lib/require.js
+
+NETWORK:
+*
+
