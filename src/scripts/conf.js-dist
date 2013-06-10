@@ -1,5 +1,4 @@
-
-/* Copy config.js-dist to config.js
+/* Copy conf.js-dist to conf.js
    and set it up for your environment.
 
    DO NOT USE ANY FILESYSTEM PATH */
@@ -10,4 +9,3 @@ define({
   apiPath: "/tt-rss/"
 
 });
-
