@@ -1118,6 +1118,28 @@ define(['jquery', 'models', 'templates','conf','utils'],
   });
 
 
+  /******* for the subscribe page ****/
+
+  var SubscribePageView = Backbone.View.extend({
+
+    events: {
+      "submit form": "submit"
+    },
+
+    submit: function(e){
+
+      var model = new models.feed({
+        feedUrl: $("#feedUrl").val()
+      });
+
+      // persist data
+      model.save();
+
+    }
+
+  });
+
+
 
   return {
 
@@ -1141,7 +1163,14 @@ define(['jquery', 'models', 'templates','conf','utils'],
       }),
 
     settingsPageView: 
-      new SettingsPageView({ el: $("#settings") })
+      new SettingsPageView({
+        el: $("#settings")
+      }),
+
+    subscribePageView:
+      new SubscribePageView({
+        el: $("#subscribe")
+      })
 
   } //return
 

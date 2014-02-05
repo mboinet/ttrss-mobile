@@ -11,6 +11,7 @@ define(['backbone', 'views', 'models'], function(Backbone, views, models){
       "cat:catId/feed:feedId":  "articles",    // #cat4/feed23
       "cat:catId/feed:feedId/art:artId":  "read",        // #cat4/feed23/art1234
       "settings":               "settings",    // #settings
+      "subscribe":               "subscribe",    // #subscribe
       "*path":                  "defaultRoute" // #*
     },
 
@@ -75,6 +76,10 @@ define(['backbone', 'views', 'models'], function(Backbone, views, models){
       this.setNextTransOptions({reverse: false, transition: "flip"});
       this.goto(views.settingsPageView.render().$el);
       this.setNextTransOptions({reverse: true, transition: "flip"});
+    },
+
+    subscribe: function(){
+      this.goto(views.subscribePageView.render().$el);
     },
 
     goto: function(page){
