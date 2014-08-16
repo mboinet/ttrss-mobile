@@ -21,10 +21,10 @@ ttrss-mobile is using:
 How to install?
 --------------
 
-* Download the last version available [here](https://github.com/nodiscc/ttrss-mobile/archive/1.0.zip).
+* Download the latest release available [here](https://github.com/mboinet/ttrss-mobile/releases).
 * Unpack the archive somewhere on your server.
 * Alternatively, you can clone the repository where you want it on your web server.
-* In the scripts dir, copy `conf.js-dist` to `conf.js` and set the variable `window.apiPath`
+* In the scripts dir, copy `conf.js-dist` to `conf.js` and set the variable `window.apiPath` pointing to your *Tiny Tiny RSS* installation.
 
 ###Updates
 * Download the update
