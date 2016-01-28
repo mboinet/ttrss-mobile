@@ -80,3 +80,8 @@ Current features
 
 Other features to come are tracked as issues.
 Feel free to give a hand or request things :-)
+
+License
+------------------
+
+ttrss-mobile is Free Software under the [AGPLv3](LICENSE)
