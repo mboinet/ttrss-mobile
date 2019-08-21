@@ -26,7 +26,7 @@ How to install?
 * Alternatively, you can clone the repository where you want it on your web server.
 * In the scripts dir, copy `conf.js-dist` to `conf.js` and set the variable `window.apiPath` pointing to your *Tiny Tiny RSS* installation.
 
-###Updates
+### Updates
 * Download the update
 * Unpack it over your previous installation
 * Compare the new conf.js-dist with yours and merge them
